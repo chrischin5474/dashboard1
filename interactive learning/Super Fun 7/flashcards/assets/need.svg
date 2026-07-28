@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" width="220" height="220">
+  <defs>
+    <!-- Soft shadows and gradients -->
+    <filter id="drop-shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#A0A5B5" flood-opacity="0.3"/>
+    </filter>
+    <linearGradient id="list-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFDF9"/>
+      <stop offset="100%" stop-color="#FFF5E5"/>
+    </linearGradient>
+    <linearGradient id="pencil-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFADAD"/>
+      <stop offset="100%" stop-color="#FF6B6B"/>
+    </linearGradient>
+  </defs>
+
+  <!-- White background matching other illustrations -->
+  <rect width="100%" height="100%" fill="#FFFFFF"/>
+
+  <!-- Main Checklist Clipboard/Paper -->
+  <g filter="url(#drop-shadow)">
+    <!-- Clipboard backing -->
+    <rect x="40" y="30" width="130" height="160" rx="16" fill="#B3E5FC"/>
+    <rect x="40" y="30" width="130" height="40" rx="16" fill="#81D4FA"/>
+    <rect x="40" y="55" width="130" height="15" fill="#81D4FA"/>
+    
+    <!-- Paper -->
+    <rect x="52" y="60" width="106" height="120" rx="8" fill="url(#list-grad)"/>
+    
+    <!-- Clipboard clip -->
+    <path d="M90 20 h40 a5 5 0 0 1 5 5 v10 a5 5 0 0 1 -5 5 H90 a5 5 0 0 1 -5 -5 v-10 a5 5 0 0 1 5 -5 z" fill="#CFD8DC"/>
+    <circle cx="110" cy="27" r="4" fill="#90A4AE"/>
+  </g>
+
+  <!-- Checklist lines and items -->
+  <g>
+    <!-- Item 1: Circle and Line -->
+    <circle cx="70" cy="90" r="8" fill="#FFF" stroke="#FF6B6B" stroke-width="3"/>
+    <line x1="88" y1="90" x2="140" y2="90" stroke="#78909C" stroke-width="4" stroke-linecap="round"/>
+    
+    <!-- Item 2: Checked Circle and Line -->
+    <circle cx="70" cy="120" r="8" fill="#FFF" stroke="#4D96FF" stroke-width="3"/>
+    <path d="M66 120 l3 3 l6 -6" fill="none" stroke="#4D96FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="88" y1="120" x2="135" y2="120" stroke="#78909C" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- Item 3: Checked Circle and Line -->
+    <circle cx="70" cy="150" r="8" fill="#FFF" stroke="#6BCB77" stroke-width="3"/>
+    <path d="M66 150 l3 3 l6 -6" fill="none" stroke="#6BCB77" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="88" y1="150" x2="145" y2="150" stroke="#78909C" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <!-- Cute Pencil -->
+  <g transform="translate(130, 100) rotate(25)" filter="url(#drop-shadow)">
+    <!-- Pencil body -->
+    <path d="M10 0 h70 v16 h-70 z" fill="url(#pencil-grad)"/>
+    <!-- Pencil tip (wood) -->
+    <polygon points="10,0 -12,8 10,16" fill="#FFE0B2"/>
+    <!-- Lead tip -->
+    <polygon points="-4,5 -12,8 -4,11" fill="#37474F"/>
+    <!-- Eraser band -->
+    <rect x="80" y="0" width="8" height="16" fill="#CFD8DC"/>
+    <!-- Eraser -->
+    <path d="M88 0 h8 a8 8 0 0 1 8 8 v0 a8 8 0 0 1 -8 8 h-8 z" fill="#FF8A8A"/>
+    <!-- Pencil stripes -->
+    <line x1="20" y1="5" x2="75" y2="5" stroke="#FFA4A4" stroke-width="1.5"/>
+    <line x1="20" y1="11" x2="75" y2="11" stroke="#FF5C5C" stroke-width="1.5"/>
+
+    <!-- Cute Face on clipboard/paper -->
+    <!-- Eyes -->
+    <circle cx="-50" cy="45" r="3" fill="#2C3E50" transform="rotate(-25)"/>
+    <circle cx="-35" cy="45" r="3" fill="#2C3E50" transform="rotate(-25)"/>
+    <!-- Smile -->
+    <path d="M-45 50 q2 4 4 0" fill="none" stroke="#2C3E50" stroke-width="2" stroke-linecap="round" transform="rotate(-25)"/>
+  </g>
+</svg>

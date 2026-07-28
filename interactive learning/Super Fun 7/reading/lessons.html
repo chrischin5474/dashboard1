@@ -1,0 +1,2132 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super Fun 7 互動式英文朗讀與學習網頁</title>
+  <!-- Google Fonts: Fredoka for rounded English, Noto Sans TC for Traditional Chinese -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    /* === Design System Tokens (Neobrutalism Style) === */
+    :root {
+      --bg-color: #FAF8F5; /* Warm chalk */
+      --text-color: #2D312E; /* Charcoal dark */
+      --border-color: #2D312E;
+      --border-width: 3px;
+      
+      /* Pastel Palette */
+      --color-primary: #FFB5B5;   /* Pastel Pink (Lesson 1) */
+      --color-success: #A8E6CF;   /* Pastel Mint (Review 1) */
+      --color-warning: #FFD3B6;   /* Pastel Orange (Lesson 2) */
+      --color-info: #BDE0FE;      /* Pastel Blue (Review 2) */
+      --color-accent: #FDFFB6;    /* Pastel Yellow (Highlight) */
+      --color-white: #FFFFFF;
+      --color-muted: #6B7280;     /* Muted grey */
+      
+      --shadow-offset: 6px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Fredoka', 'Noto Sans TC', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 50px;
+    }
+
+    /* === Header Layout === */
+    header {
+      background-color: var(--color-white);
+      border-bottom: var(--border-width) solid var(--border-color);
+      padding: 20px 30px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 0px rgba(0, 0, 0, 0.05);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      background-color: var(--color-accent);
+      border: 2px solid var(--border-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 2px 2px 0px var(--border-color);
+      font-size: 24px;
+    }
+
+    .brand-text h1 {
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .brand-text p {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-muted);
+    }
+
+    /* === Speed Controller inside Header === */
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .speed-control-container {
+      background-color: #FFFDF6;
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 2px 2px 0px var(--border-color);
+    }
+
+    .speed-control-container label {
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .speed-slider {
+      width: 100px;
+      cursor: pointer;
+      accent-color: var(--text-color);
+    }
+
+    .speed-value {
+      font-size: 14px;
+      font-weight: 800;
+      min-width: 45px;
+      text-align: center;
+    }
+
+    /* === Main Container === */
+    .container {
+      max-width: 1200px;
+      width: 92%;
+      margin: 30px auto;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 30px;
+      flex: 1;
+    }
+
+    @media (max-width: 900px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* === Left Column: Tabs and content === */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    /* Tabs Navigation */
+    .tabs-nav {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 550px) {
+      .tabs-nav {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .tab-btn {
+      padding: 12px 10px;
+      font-size: 15px;
+      font-weight: 800;
+      border: var(--border-width) solid var(--border-color);
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 3px 3px 0px var(--border-color);
+      transition: all 0.15s ease;
+      background-color: var(--color-white);
+      text-align: center;
+    }
+
+    .tab-btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0px var(--border-color);
+    }
+
+    .tab-btn:active {
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0px var(--border-color);
+    }
+
+    .tab-btn[data-tab="lesson1"].active { background-color: var(--color-primary); }
+    .tab-btn[data-tab="review1"].active { background-color: var(--color-success); }
+    .tab-btn[data-tab="lesson2"].active { background-color: var(--color-warning); }
+    .tab-btn[data-tab="review2"].active { background-color: var(--color-info); }
+
+    /* Reader Panel Card */
+    .reader-card {
+      background-color: var(--color-white);
+      border: var(--border-width) solid var(--border-color);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .reader-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px dashed #E2E8F0;
+      padding-bottom: 15px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .lesson-title {
+      font-size: 24px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Global Player Controls */
+    .player-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      font-weight: 800;
+      font-size: 14px;
+      padding: 8px 16px;
+      background-color: var(--color-white);
+      border: 2px solid var(--border-color);
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 2px 2px 0px var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.1s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 3px 3px 0px var(--border-color);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+      box-shadow: 1px 1px 0px var(--border-color);
+    }
+
+    .btn-play { background-color: var(--color-success); }
+    .btn-pause { background-color: var(--color-warning); }
+    .btn-stop { background-color: var(--color-primary); }
+
+    /* Paragraph Block styling */
+    .paragraph-card {
+      border: 2px solid var(--border-color);
+      border-radius: 18px;
+      padding: 20px;
+      background-color: #FFFDFB;
+      box-shadow: 3px 3px 0px var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .english-para {
+      font-size: 19px;
+      line-height: 1.8;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .chinese-para {
+      font-size: 15px;
+      line-height: 1.6;
+      font-weight: 600;
+      color: #556B2F; /* Dark olive green for translations */
+      background-color: #F3F8F2;
+      border-radius: 12px;
+      padding: 12px 16px;
+      border-left: 4px solid var(--color-success);
+    }
+
+    /* Sentence wrapper & highlighting */
+    .sentence-block {
+      position: relative;
+      border-radius: 6px;
+      padding: 1px 4px;
+      transition: background-color 0.25s ease, box-shadow 0.25s ease;
+      display: inline;
+    }
+
+    .sentence-block.active-sentence {
+      background-color: var(--color-accent);
+      box-shadow: 0 0 0 2px var(--color-accent);
+      color: #000;
+    }
+
+    .play-sentence-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      margin-right: 4px;
+      font-size: 14px;
+      opacity: 0.4;
+      transition: opacity 0.2s;
+      vertical-align: middle;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 1px 3px;
+      background-color: #fff;
+    }
+
+    .sentence-block:hover .play-sentence-icon {
+      opacity: 1;
+    }
+
+    /* Interactive individual words */
+    .word {
+      cursor: pointer;
+      display: inline-block;
+      position: relative;
+      border-bottom: 2px dashed transparent;
+      transition: all 0.15s ease;
+      user-select: none;
+      padding: 0 1px;
+    }
+
+    .word:hover {
+      background-color: #EBF4FF;
+      border-bottom: 2px dashed #3B82F6;
+      transform: translateY(-1px);
+    }
+
+    .word.selected-word {
+      background-color: var(--color-info) !important;
+      border-bottom: 2px solid #3B82F6;
+      font-weight: 700;
+    }
+
+    /* === Right Column: Sticky Vocabulary Look-up Panel === */
+    .sidebar {
+      position: relative;
+    }
+
+    .lookup-panel {
+      position: sticky;
+      top: 110px;
+      background-color: var(--color-white);
+      border: var(--border-width) solid var(--border-color);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--border-color);
+      transition: all 0.3s ease;
+    }
+
+    .lookup-panel.empty {
+      border-style: dashed;
+      background-color: #FAF9F6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--color-muted);
+      min-height: 250px;
+    }
+
+    .lookup-panel.empty .bulb-icon {
+      font-size: 44px;
+      margin-bottom: 15px;
+      animation: float 3s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .lookup-details {
+      display: none;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .lookup-details.active {
+      display: flex;
+    }
+
+    .lookup-word-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 12px;
+    }
+
+    .lookup-word {
+      font-size: 26px;
+      font-weight: 900;
+    }
+
+    .pronounce-word-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 2px solid var(--border-color);
+      background-color: var(--color-accent);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      box-shadow: 2px 2px 0px var(--border-color);
+      transition: all 0.1s;
+    }
+
+    .pronounce-word-btn:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px var(--border-color);
+    }
+
+    .pronounce-word-btn:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--border-color);
+    }
+
+    .lookup-row {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .lookup-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--color-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .lookup-value {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .lookup-ipa {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 18px;
+      color: #3B82F6;
+      background-color: #EFF6FF;
+      padding: 4px 10px;
+      border-radius: 8px;
+      display: inline-block;
+      width: fit-content;
+      border: 1px solid #BFDBFE;
+    }
+
+    .lookup-pos {
+      font-size: 14px;
+      color: #D97706;
+      background-color: #FEF3C7;
+      padding: 3px 8px;
+      border-radius: 8px;
+      display: inline-block;
+      width: fit-content;
+      font-weight: 700;
+      border: 1px solid #FDE68A;
+    }
+
+    .lookup-translation {
+      font-size: 22px;
+      font-weight: 900;
+      color: #10B981;
+      background-color: #ECFDF5;
+      padding: 10px 15px;
+      border-radius: 12px;
+      border: 2px solid var(--border-color);
+      box-shadow: 2px 2px 0px var(--border-color);
+    }
+
+    .close-lookup-btn {
+      margin-top: 15px;
+      width: 100%;
+      text-align: center;
+      background-color: #F3F4F6;
+      border: 2px solid var(--border-color);
+      box-shadow: 2px 2px 0px var(--border-color);
+    }
+
+    /* Mobile Bottom Drawer for Lookup */
+    @media (max-width: 900px) {
+      .lookup-panel {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: auto;
+        z-index: 1000;
+        border-radius: 24px 24px 0 0;
+        border-bottom: none;
+        box-shadow: 0px -8px 20px rgba(0,0,0,0.1), 0px -3px 0px var(--border-color);
+        transform: translateY(105%);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+
+      .lookup-panel.mobile-active {
+        transform: translateY(0);
+      }
+
+      /* Backdrop Overlay for mobile drawer */
+      .backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0,0,0,0.4);
+        z-index: 999;
+        display: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .backdrop.active {
+        display: block;
+        opacity: 1;
+      }
+    }
+
+    /* Footer styling */
+    footer {
+      text-align: center;
+      font-size: 13px;
+      color: var(--color-muted);
+      margin-top: auto;
+      padding-top: 30px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Mobile Backdrop -->
+  <div class="backdrop" id="backdrop" onclick="closeLookupPanel()"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-logo">📚</div>
+      <div class="brand-text">
+        <h1>Super Fun 7</h1>
+        <p>互動式課文朗讀與翻譯工具</p>
+      </div>
+    </div>
+    
+    <div class="header-controls">
+      <a href="../index.html" style="text-decoration: none; font-weight: 700; background-color: var(--color-success); border: 2.5px solid var(--border-color); padding: 8px 15px; border-radius: 12px; box-shadow: 2px 2px 0px var(--border-color); font-size: 14px; color: var(--text-color); display: flex; align-items: center; gap: 5px; margin-right: 15px;">
+        🏠 返回傳送門
+      </a>
+      <!-- Speed Slider -->
+      <div class="speed-control-container">
+        <label for="speed-slider">語速 :</label>
+        <input type="range" id="speed-slider" class="speed-slider" min="0.5" max="2.0" step="0.1" value="1.0" oninput="updateSpeedLabel(this.value)">
+        <span class="speed-value" id="speed-label">1.0x</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Left Area: Main Content -->
+    <section class="main-content">
+      <!-- Tabs Navigation -->
+      <nav class="tabs-nav">
+        <button class="tab-btn active" data-tab="lesson1" onclick="switchTab('lesson1')">Lesson 1 🇹🇼</button>
+        <button class="tab-btn" data-tab="review1" onclick="switchTab('review1')">Review 1 ✉️</button>
+        <button class="tab-btn" data-tab="lesson2" onclick="switchTab('lesson2')">Lesson 2 🚜</button>
+        <button class="tab-btn" data-tab="review2" onclick="switchTab('review2')">Review 2 🥗</button>
+      </nav>
+
+      <!-- Reader Panel -->
+      <article class="reader-card">
+        <div class="reader-header">
+          <h2 class="lesson-title" id="lesson-title-display">
+            <!-- Dynamically populated -->
+          </h2>
+          <div class="player-controls">
+            <button class="btn btn-play" onclick="playLesson()">▶️ 朗讀課文</button>
+            <button class="btn btn-pause" onclick="pauseLesson()">⏸️ 暫停</button>
+            <button class="btn btn-stop" onclick="stopLesson()">⏹️ 停止</button>
+          </div>
+        </div>
+
+        <!-- Rendered Lesson Paragraphs Container -->
+        <div id="paragraphs-container" class="paragraphs-list">
+          <!-- Dynamically populated -->
+        </div>
+      </article>
+    </section>
+
+    <!-- Right Area: Sidebar Vocabulary Lookup -->
+    <aside class="sidebar">
+      <div class="lookup-panel empty" id="lookup-panel">
+        <div id="lookup-prompt">
+          <div class="bulb-icon">💡</div>
+          <p style="font-weight: 800; font-size: 15px; margin-bottom: 8px;">單字即點即查</p>
+          <p style="font-size: 13px; line-height: 1.5; padding: 0 10px;">點擊課文中的任何英文單字，即可在此顯示中文意思、音標 (IPA) 與詞性，還可以聆聽單字發音喔！</p>
+        </div>
+
+        <div class="lookup-details" id="lookup-details">
+          <div class="lookup-word-header">
+            <div class="lookup-word" id="info-word">Apple</div>
+            <button class="pronounce-word-btn" onclick="pronounceWord()" title="播放單字讀音">🔊</button>
+          </div>
+
+          <div class="lookup-row">
+            <span class="lookup-label">音標 (IPA)</span>
+            <span class="lookup-ipa" id="info-ipa">[ˈæpl]</span>
+          </div>
+
+          <div class="lookup-row">
+            <span class="lookup-label">詞性 (POS)</span>
+            <span class="lookup-pos" id="info-pos">noun.</span>
+          </div>
+
+          <div class="lookup-row">
+            <span class="lookup-label">中文翻譯</span>
+            <div class="lookup-translation" id="info-zh">蘋果</div>
+          </div>
+
+          <button class="btn close-lookup-btn" onclick="closeLookupPanel()">關閉查詢</button>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="max-width">
+    <p>Super Fun 7 English Interactive Reader &copy; 2026. Made with ❤️ for learning.</p>
+  </footer>
+
+  <script>
+    // Embedded Databases
+    const LESSON_DATA = {
+  "lesson1": {
+    "title": "Lesson 1: New Life in Taiwan",
+    "icon": "🇹🇼",
+    "paragraphs": [
+      {
+        "id": "l1-p1",
+        "sentences": [
+          {
+            "id": "l1-s1",
+            "english": "Hi, I'm Emma's mom.",
+            "chinese": "嗨，我是 Emma 的媽媽。"
+          },
+          {
+            "id": "l1-s2",
+            "english": "I'm from the USA.",
+            "chinese": "我來自美國。"
+          },
+          {
+            "id": "l1-s3",
+            "english": "I like to visit friends and go shopping in my free time.",
+            "chinese": "在空閒時間，我喜歡拜訪朋友和去購物。"
+          },
+          {
+            "id": "l1-s4",
+            "english": "I can't speak Chinese well, but people in Taiwan are nice to me.",
+            "chinese": "我中文說得不太好，但台灣的人們對我都很好。"
+          }
+        ],
+        "chineseTranslation": "嗨，我是 Emma 的媽媽。我來自美國。在空閒時間，我喜歡拜訪朋友和去購物。我中文說得不太好，但台灣的人們對我都很好。"
+      },
+      {
+        "id": "l1-p2",
+        "sentences": [
+          {
+            "id": "l1-s5",
+            "english": "Wendy's mom is my friend.",
+            "chinese": "Wendy 的媽媽是我的朋友。"
+          },
+          {
+            "id": "l1-s6",
+            "english": "She's from Vietnam.",
+            "chinese": "她來自越南。"
+          },
+          {
+            "id": "l1-s7",
+            "english": "We learn Chinese together.",
+            "chinese": "我們一起學中文。"
+          },
+          {
+            "id": "l1-s8",
+            "english": "She likes to dance in her free time.",
+            "chinese": "她喜歡在空閒時間跳舞。"
+          },
+          {
+            "id": "l1-s9",
+            "english": "We dance at the park every Sunday morning.",
+            "chinese": "我們每個星期日早上在公園跳舞。"
+          }
+        ],
+        "chineseTranslation": "Wendy 的媽媽是我的朋友。她來自越南。我們一起學中文。她喜歡在空閒時間跳舞。我們每個星期日早上在公園跳舞。"
+      },
+      {
+        "id": "l1-p3",
+        "sentences": [
+          {
+            "id": "l1-s10",
+            "english": "Wendy's mom and I like to cook together.",
+            "chinese": "Wendy 的媽媽和我喜歡一起做飯。"
+          },
+          {
+            "id": "l1-s11",
+            "english": "Sharing food is a good way to let people know more about our countries.",
+            "chinese": "分享食物是讓大家更了解我們國家的好方法。"
+          }
+        ],
+        "chineseTranslation": "Wendy 的媽媽和我喜歡一起做飯。分享食物是讓大家更了解我們國家的好方法。"
+      }
+    ]
+  },
+  "review1": {
+    "title": "Review 1: Letter to Lily",
+    "icon": "✉️",
+    "paragraphs": [
+      {
+        "id": "r1-p1",
+        "sentences": [
+          {
+            "id": "r1-s1",
+            "english": "Dear Lily,",
+            "chinese": "親愛的 Lily："
+          }
+        ],
+        "chineseTranslation": "親愛的 Lily："
+      },
+      {
+        "id": "r1-p2",
+        "sentences": [
+          {
+            "id": "r1-s2",
+            "english": "I'm Yoshi from Japan.",
+            "chinese": "我是來自日本的吉 (Yoshi)。"
+          },
+          {
+            "id": "r1-s3",
+            "english": "I'm eleven years old.",
+            "chinese": "我十一歲了。"
+          },
+          {
+            "id": "r1-s4",
+            "english": "You're my first friend from Taiwan.",
+            "chinese": "你是我第一個來自台灣的朋友。"
+          },
+          {
+            "id": "r1-s5",
+            "english": "I want to share this beautiful picture with you.",
+            "chinese": "我想跟你分享這張美麗的照片。"
+          },
+          {
+            "id": "r1-s6",
+            "english": "It's a picture of Mount Fuji.",
+            "chinese": "這是一張富士山的照片。"
+          },
+          {
+            "id": "r1-s7",
+            "english": "I like to go camping there.",
+            "chinese": "我喜歡在那裡露營。"
+          },
+          {
+            "id": "r1-s8",
+            "english": "In my free time, I also like to play basketball with my dad.",
+            "chinese": "在我的空閒時間，我也喜歡和我爸爸打籃球。"
+          },
+          {
+            "id": "r1-s9",
+            "english": "My mom can't play basketball, but she likes to ride a bike.",
+            "chinese": "我媽媽不會打籃球，但她喜歡騎腳踏車。"
+          },
+          {
+            "id": "r1-s10",
+            "english": "My family all enjoy outdoor activities.",
+            "chinese": "我們全家都喜歡戶外活動。"
+          },
+          {
+            "id": "r1-s11",
+            "english": "How about you?",
+            "chinese": "你呢？"
+          },
+          {
+            "id": "r1-s12",
+            "english": "What do you and your family like to do?",
+            "chinese": "你和你家人喜歡做什麼？"
+          }
+        ],
+        "chineseTranslation": "我是來自日本的吉 (Yoshi)。我十一歲了。你是我第一個來自台灣的朋友。我想跟你分享這張美麗的照片。這是一張富士山的照片。我喜歡在那裡露營。在我的空閒時間，我也喜歡和我爸爸打籃球。我媽媽不會打籃球，但她喜歡騎腳踏車。我們全家都喜歡戶外活動。你呢？你和你家人喜歡做什麼？"
+      },
+      {
+        "id": "r1-p3",
+        "sentences": [
+          {
+            "id": "r1-s13",
+            "english": "Yoshi",
+            "chinese": "吉 (Yoshi)"
+          }
+        ],
+        "chineseTranslation": "吉 (Yoshi)"
+      }
+    ]
+  },
+  "lesson2": {
+    "title": "Lesson 2: Helpers on the Farm",
+    "icon": "🚜",
+    "paragraphs": [
+      {
+        "id": "l2-p1",
+        "sentences": [
+          {
+            "id": "l2-s1",
+            "english": "This is my grandma.",
+            "chinese": "這是我的祖母。"
+          },
+          {
+            "id": "l2-s2",
+            "english": "She grows the best rice in town.",
+            "chinese": "她種植了鎮上最好的稻米。"
+          },
+          {
+            "id": "l2-s3",
+            "english": "Look at these happy ducks.",
+            "chinese": "看著這些快樂的鴨子。"
+          },
+          {
+            "id": "l2-s4",
+            "english": "Because of their hard work, we can eat healthy rice every day.",
+            "chinese": "因為牠們的辛勤工作，我們每天都能吃到健康的稻米。"
+          }
+        ],
+        "chineseTranslation": "這是我的祖母。她種植了鎮上最好的稻米。看著這些快樂的鴨子。因為牠們的辛勤工作，我們每天都能吃到健康的稻米。"
+      },
+      {
+        "id": "l2-p2",
+        "sentences": [
+          {
+            "id": "l2-s5",
+            "english": "My grandma knows everything on the farm with her smartphone.",
+            "chinese": "我的祖母用她的智慧型手機知道農場上的一切。"
+          },
+          {
+            "id": "l2-s6",
+            "english": "Do you know how many watermelons there are?",
+            "chinese": "你知道那裡有多少個西瓜嗎？"
+          },
+          {
+            "id": "l2-s7",
+            "english": "Drones can count for us in a short time.",
+            "chinese": "無人機能在短時間內幫我們數出來。"
+          }
+        ],
+        "chineseTranslation": "我的祖母用她的智慧型手機知道農場上的一切。你知道那裡有多少個西瓜嗎？無人機能在短時間內幫我們數出來。"
+      },
+      {
+        "id": "l2-p3",
+        "sentences": [
+          {
+            "id": "l2-s8",
+            "english": "What would you like to eat today?",
+            "chinese": "你今天想吃點什麼？"
+          },
+          {
+            "id": "l2-s9",
+            "english": "How about something organic?",
+            "chinese": "來點有機的怎麼樣？"
+          },
+          {
+            "id": "l2-s10",
+            "english": "It's healthy and good for the earth.",
+            "chinese": "它很健康，而且對地球很好。"
+          }
+        ],
+        "chineseTranslation": "你今天想吃點什麼？來點有機的怎麼樣？它很健康，而且對地球很好。"
+      }
+    ]
+  },
+  "review2": {
+    "title": "Review 2: Ordering Poke Bowl",
+    "icon": "🥗",
+    "paragraphs": [
+      {
+        "id": "r2-p1",
+        "sentences": [
+          {
+            "id": "r2-s1",
+            "english": "Clerk : Would you like a Poke Bowl for lunch?",
+            "chinese": "店員：你午餐想要吃夏威夷拌飯 (Poke Bowl) 嗎？"
+          },
+          {
+            "id": "r2-s2",
+            "english": "You can choose your own base and add-ons.",
+            "chinese": "你可以選擇自己的主食和配料。"
+          }
+        ],
+        "chineseTranslation": "店員：你午餐想要吃夏威夷拌飯 (Poke Bowl) 嗎？你可以選擇自己的主食和配料。"
+      },
+      {
+        "id": "r2-p2",
+        "sentences": [
+          {
+            "id": "r2-s3",
+            "english": "Steve : Sounds cool. I would like some rice for the base.",
+            "chinese": "史蒂夫：聽起來很酷。我想要選米飯作為主食。"
+          }
+        ],
+        "chineseTranslation": "史蒂夫：聽起來很酷。我想要選米飯作為主食。"
+      },
+      {
+        "id": "r2-p3",
+        "sentences": [
+          {
+            "id": "r2-s4",
+            "english": "Clerk : OK. Please choose three add-ons.",
+            "chinese": "店員：好的。請選擇三種配料。"
+          }
+        ],
+        "chineseTranslation": "店員：好的。請選擇三種配料。"
+      },
+      {
+        "id": "r2-p4",
+        "sentences": [
+          {
+            "id": "r2-s5",
+            "english": "Steve : I would like an egg, some chicken, and vegetables.",
+            "chinese": "史蒂夫：我想要一個蛋、一些雞肉和蔬菜。"
+          }
+        ],
+        "chineseTranslation": "史蒂夫：我想要一個蛋、一些雞肉和蔬菜。"
+      },
+      {
+        "id": "r2-p5",
+        "sentences": [
+          {
+            "id": "r2-s6",
+            "english": "Clerk : Would you like some soup?",
+            "chinese": "店員：你想要一些湯嗎？"
+          }
+        ],
+        "chineseTranslation": "店員：你想要一些湯嗎？"
+      },
+      {
+        "id": "r2-p6",
+        "sentences": [
+          {
+            "id": "r2-s7",
+            "english": "Steve : Yes, I would like some soup and cookies.",
+            "chinese": "史蒂夫：是的，我想要一些湯和餅乾。"
+          }
+        ],
+        "chineseTranslation": "史蒂夫：是的，我想要一些湯和餅乾。"
+      },
+      {
+        "id": "r2-p7",
+        "sentences": [
+          {
+            "id": "r2-s8",
+            "english": "Clerk : How many cookies do you need?",
+            "chinese": "店員：你需要多少片餅乾？"
+          }
+        ],
+        "chineseTranslation": "店員：你需要多少片餅乾？"
+      },
+      {
+        "id": "r2-p8",
+        "sentences": [
+          {
+            "id": "r2-s9",
+            "english": "Steve : I need one cookie, please.",
+            "chinese": "史蒂夫：請給我一片餅乾。"
+          }
+        ],
+        "chineseTranslation": "史蒂夫：請給我一片餅乾。"
+      },
+      {
+        "id": "r2-p9",
+        "sentences": [
+          {
+            "id": "r2-s10",
+            "english": "Clerk : Anything else?",
+            "chinese": "店員：還要別的嗎？"
+          }
+        ],
+        "chineseTranslation": "店員：還要別的嗎？"
+      },
+      {
+        "id": "r2-p10",
+        "sentences": [
+          {
+            "id": "r2-s11",
+            "english": "Steve : That's all. Thank you.",
+            "chinese": "史蒂夫：就這些了。謝謝。"
+          }
+        ],
+        "chineseTranslation": "史蒂夫：就這些了。謝謝。"
+      }
+    ]
+  }
+};
+    const WORD_DB = {
+  "a": {
+    "zh": "一個",
+    "ipa": "ə",
+    "pos": "art. 冠詞"
+  },
+  "about": {
+    "zh": "關於、大約",
+    "ipa": "əˈbaʊt",
+    "pos": "prep. 介系詞"
+  },
+  "activities": {
+    "zh": "活動 (複數)",
+    "ipa": "ækˈtɪvətiz",
+    "pos": "n. 名詞"
+  },
+  "add-ons": {
+    "zh": "配料、附加物",
+    "ipa": "ˈæd-ɒnz",
+    "pos": "n. 名詞"
+  },
+  "all": {
+    "zh": "全部、都",
+    "ipa": "ɔːl",
+    "pos": "adj. 形容詞 / adv. 副詞"
+  },
+  "also": {
+    "zh": "也、而且",
+    "ipa": "ˈɔːlsəʊ",
+    "pos": "adv. 副詞"
+  },
+  "an": {
+    "zh": "一個 (元音前)",
+    "ipa": "ən",
+    "pos": "art. 冠詞"
+  },
+  "and": {
+    "zh": "和、與",
+    "ipa": "ænd",
+    "pos": "conj. 連接詞"
+  },
+  "anything": {
+    "zh": "任何事",
+    "ipa": "ˈeniθɪŋ",
+    "pos": "pron. 代名詞"
+  },
+  "are": {
+    "zh": "是",
+    "ipa": "ɑːr",
+    "pos": "v. 動詞 (Be動詞)"
+  },
+  "at": {
+    "zh": "在...",
+    "ipa": "æt",
+    "pos": "prep. 介系詞"
+  },
+  "base": {
+    "zh": "基底、主食",
+    "ipa": "beɪs",
+    "pos": "n. 名詞"
+  },
+  "basketball": {
+    "zh": "籃球",
+    "ipa": "ˈbæskɪtbɔːl",
+    "pos": "n. 名詞"
+  },
+  "beautiful": {
+    "zh": "美麗的",
+    "ipa": "ˈbjuːtɪfl",
+    "pos": "adj. 形容詞"
+  },
+  "because": {
+    "zh": "因為",
+    "ipa": "bɪˈkɒz",
+    "pos": "conj. 連接詞"
+  },
+  "best": {
+    "zh": "最好的",
+    "ipa": "best",
+    "pos": "adj. 形容詞"
+  },
+  "bike": {
+    "zh": "腳踏車",
+    "ipa": "baɪk",
+    "pos": "n. 名詞"
+  },
+  "bowl": {
+    "zh": "碗 (Poke Bowl: 夏威夷拌飯)",
+    "ipa": "bəʊl",
+    "pos": "n. 名詞"
+  },
+  "but": {
+    "zh": "但是",
+    "ipa": "bʌt",
+    "pos": "conj. 連接詞"
+  },
+  "camping": {
+    "zh": "露營",
+    "ipa": "ˈkæmpɪŋ",
+    "pos": "n. 名詞 / v. 動詞"
+  },
+  "can": {
+    "zh": "能、可以",
+    "ipa": "kæn",
+    "pos": "aux. 助動詞"
+  },
+  "can't": {
+    "zh": "不能",
+    "ipa": "kænt",
+    "pos": "aux. 助動詞"
+  },
+  "chicken": {
+    "zh": "雞肉、雞",
+    "ipa": "ˈtʃɪkɪn",
+    "pos": "n. 名詞"
+  },
+  "chinese": {
+    "zh": "中文、漢語",
+    "ipa": "ˌtʃaɪˈniːz",
+    "pos": "n. 名詞 / adj. 形容詞"
+  },
+  "choose": {
+    "zh": "選擇",
+    "ipa": "tʃuːz",
+    "pos": "v. 動詞"
+  },
+  "clerk": {
+    "zh": "店員",
+    "ipa": "klɑːk",
+    "pos": "n. 名詞"
+  },
+  "cook": {
+    "zh": "烹飪、做飯",
+    "ipa": "ʊk",
+    "pos": "v. 動詞 / n. 名詞"
+  },
+  "cookie": {
+    "zh": "餅乾 (單數)",
+    "ipa": "ˈʊki",
+    "pos": "n. 名詞"
+  },
+  "cookies": {
+    "zh": "餅乾 (複數)",
+    "ipa": "ˈʊkiz",
+    "pos": "n. 名詞"
+  },
+  "cool": {
+    "zh": "酷的、涼爽的",
+    "ipa": "kuːl",
+    "pos": "adj. 形容詞"
+  },
+  "count": {
+    "zh": "數、計算",
+    "ipa": "kaʊnt",
+    "pos": "v. 動詞"
+  },
+  "countries": {
+    "zh": "國家 (複數)",
+    "ipa": "ˈkʌntriz",
+    "pos": "n. 名詞"
+  },
+  "dad": {
+    "zh": "爸爸",
+    "ipa": "dæd",
+    "pos": "n. 名詞"
+  },
+  "dance": {
+    "zh": "跳舞",
+    "ipa": "dæns",
+    "pos": "v. 動詞 / n. 名詞"
+  },
+  "day": {
+    "zh": "天、日子",
+    "ipa": "deɪ",
+    "pos": "n. 名詞"
+  },
+  "dear": {
+    "zh": "親愛的",
+    "ipa": "dɪər",
+    "pos": "adj. 形容詞"
+  },
+  "do": {
+    "zh": "做、助動詞",
+    "ipa": "duː",
+    "pos": "v. 動詞 / aux. 助動詞"
+  },
+  "drones": {
+    "zh": "無人機 (複數)",
+    "ipa": "drəʊnz",
+    "pos": "n. 名詞"
+  },
+  "ducks": {
+    "zh": "鴨子 (複數)",
+    "ipa": "dʌks",
+    "pos": "n. 名詞"
+  },
+  "earth": {
+    "zh": "地球",
+    "ipa": "ɜːθ",
+    "pos": "n. 名詞"
+  },
+  "eat": {
+    "zh": "吃",
+    "ipa": "iːt",
+    "pos": "v. 動詞"
+  },
+  "egg": {
+    "zh": "蛋",
+    "ipa": "eɡ",
+    "pos": "n. 名詞"
+  },
+  "eleven": {
+    "zh": "十一",
+    "ipa": "ɪˈlevn",
+    "pos": "num. 數字"
+  },
+  "else": {
+    "zh": "其他的、另外",
+    "ipa": "els",
+    "pos": "adj. 形容詞 / adv. 副詞"
+  },
+  "emma's": {
+    "zh": "Emma 的",
+    "ipa": "ˈeməz",
+    "pos": "prop. n. 專有名詞屬格"
+  },
+  "enjoy": {
+    "zh": "享受、喜愛",
+    "ipa": "ɪnˈdʒɔɪ",
+    "pos": "v. 動詞"
+  },
+  "every": {
+    "zh": "每個",
+    "ipa": "ˈevri",
+    "pos": "adj. 形容詞"
+  },
+  "everything": {
+    "zh": "一切、每件事",
+    "ipa": "ˈevriθɪŋ",
+    "pos": "pron. 代名詞"
+  },
+  "family": {
+    "zh": "家人、家庭",
+    "ipa": "ˈfæməli",
+    "pos": "n. 名詞"
+  },
+  "farm": {
+    "zh": "農場",
+    "ipa": "fɑːm",
+    "pos": "n. 名詞"
+  },
+  "first": {
+    "zh": "第一、首先",
+    "ipa": "fɜːst",
+    "pos": "adj. 形容詞 / adv. 副詞"
+  },
+  "food": {
+    "zh": "食物",
+    "ipa": "fuːd",
+    "pos": "n. 名詞"
+  },
+  "for": {
+    "zh": "為、作",
+    "ipa": "fɔːr",
+    "pos": "prep. 介系詞"
+  },
+  "free": {
+    "zh": "空閒的、自由的",
+    "ipa": "friː",
+    "pos": "adj. 形容詞"
+  },
+  "friend": {
+    "zh": "朋友 (單數)",
+    "ipa": "frend",
+    "pos": "n. 名詞"
+  },
+  "friends": {
+    "zh": "朋友 (複數)",
+    "ipa": "frendz",
+    "pos": "n. 名詞"
+  },
+  "from": {
+    "zh": "來自",
+    "ipa": "frɒm",
+    "pos": "prep. 介系詞"
+  },
+  "fuji": {
+    "zh": "富士 (Mount Fuji: 富士山)",
+    "ipa": "ˈfuːdʒi",
+    "pos": "prop. n. 專有名詞"
+  },
+  "go": {
+    "zh": "去、走",
+    "ipa": "ɡəʊ",
+    "pos": "v. 動詞"
+  },
+  "good": {
+    "zh": "好的",
+    "ipa": "ɡʊd",
+    "pos": "adj. 形容詞"
+  },
+  "grandma": {
+    "zh": "祖母、外婆",
+    "ipa": "ˈɡrænmɑː",
+    "pos": "n. 名詞"
+  },
+  "grows": {
+    "zh": "種植、生長 (三單)",
+    "ipa": "ɡrəʊz",
+    "pos": "v. 動詞"
+  },
+  "happy": {
+    "zh": "快樂的",
+    "ipa": "ˈhæpi",
+    "pos": "adj. 形容詞"
+  },
+  "hard": {
+    "zh": "辛勤的、努力的",
+    "ipa": "hɑːd",
+    "pos": "adj. 形容詞 / adv. 副詞"
+  },
+  "healthy": {
+    "zh": "健康的",
+    "ipa": "ˈhelθi",
+    "pos": "adj. 形容詞"
+  },
+  "helpers": {
+    "zh": "幫手、助手 (複數)",
+    "ipa": "ˈhelpəz",
+    "pos": "n. 名詞"
+  },
+  "her": {
+    "zh": "她的",
+    "ipa": "hɜːr",
+    "pos": "pron. 代名詞 (所有格)"
+  },
+  "hi": {
+    "zh": "嗨、你好",
+    "ipa": "haɪ",
+    "pos": "int. 感嘆詞"
+  },
+  "how": {
+    "zh": "如何、多麼",
+    "ipa": "haʊ",
+    "pos": "adv. 副詞"
+  },
+  "i": {
+    "zh": "我",
+    "ipa": "aɪ",
+    "pos": "pron. 代名詞 (主格)"
+  },
+  "i'm": {
+    "zh": "我是",
+    "ipa": "aɪm",
+    "pos": "cont. 縮寫"
+  },
+  "in": {
+    "zh": "在...裡",
+    "ipa": "ɪn",
+    "pos": "prep. 介系詞"
+  },
+  "is": {
+    "zh": "是",
+    "ipa": "ɪz",
+    "pos": "v. 動詞 (Be動詞單數)"
+  },
+  "it's": {
+    "zh": "它是",
+    "ipa": "its",
+    "pos": "cont. 縮寫"
+  },
+  "japan": {
+    "zh": "日本",
+    "ipa": "dʒəˈpæn",
+    "pos": "prop. n. 專有名詞"
+  },
+  "know": {
+    "zh": "知道",
+    "ipa": "nəʊ",
+    "pos": "v. 動詞"
+  },
+  "knows": {
+    "zh": "知道 (三單)",
+    "ipa": "nəʊz",
+    "pos": "v. 動詞"
+  },
+  "learn": {
+    "zh": "學習",
+    "ipa": "lɜːn",
+    "pos": "v. 動詞"
+  },
+  "let": {
+    "zh": "讓",
+    "ipa": "let",
+    "pos": "v. 動詞"
+  },
+  "life": {
+    "zh": "生活、生命",
+    "ipa": "laɪf",
+    "pos": "n. 名詞"
+  },
+  "like": {
+    "zh": "喜歡 / 像",
+    "ipa": "laɪk",
+    "pos": "v. 動詞 / prep. 介系詞"
+  },
+  "likes": {
+    "zh": "喜歡 (三單)",
+    "ipa": "laɪks",
+    "pos": "v. 動詞"
+  },
+  "lily": {
+    "zh": "莉莉",
+    "ipa": "ˈlɪli",
+    "pos": "prop. n. 專有名詞"
+  },
+  "look": {
+    "zh": "看",
+    "ipa": "lʊk",
+    "pos": "v. 動詞"
+  },
+  "lunch": {
+    "zh": "午餐",
+    "ipa": "lʌntʃ",
+    "pos": "n. 名詞"
+  },
+  "many": {
+    "zh": "許多",
+    "ipa": "ˈmeni",
+    "pos": "adj. 形容詞"
+  },
+  "me": {
+    "zh": "我 (受格)",
+    "ipa": "miː",
+    "pos": "pron. 代名詞"
+  },
+  "mom": {
+    "zh": "媽媽",
+    "ipa": "mɒm",
+    "pos": "n. 名詞"
+  },
+  "more": {
+    "zh": "更多",
+    "ipa": "mɔːr",
+    "pos": "adj. 形容詞 / adv. 副詞"
+  },
+  "morning": {
+    "zh": "早上、上午",
+    "ipa": "ˈmɔːnɪŋ",
+    "pos": "n. 名詞"
+  },
+  "mount": {
+    "zh": "山、山峰 (縮寫 Mt.)",
+    "ipa": "maʊnt",
+    "pos": "n. 名詞"
+  },
+  "my": {
+    "zh": "我的",
+    "ipa": "maɪ",
+    "pos": "pron. 代名詞 (所有格)"
+  },
+  "need": {
+    "zh": "需要",
+    "ipa": "niːd",
+    "pos": "v. 動詞"
+  },
+  "new": {
+    "zh": "新的",
+    "ipa": "njuː",
+    "pos": "adj. 形容詞"
+  },
+  "nice": {
+    "zh": "友善的、美好的",
+    "ipa": "naɪs",
+    "pos": "adj. 形容詞"
+  },
+  "of": {
+    "zh": "...的",
+    "ipa": "ɒv",
+    "pos": "prep. 介系詞"
+  },
+  "ok": {
+    "zh": "好的、可以",
+    "ipa": "əʊˈkeɪ",
+    "pos": "adj. 形容詞 / int. 感嘆詞"
+  },
+  "old": {
+    "zh": "老的、...歲的",
+    "ipa": "əʊld",
+    "pos": "adj. 形容詞"
+  },
+  "on": {
+    "zh": "在...之上",
+    "ipa": "ɒn",
+    "pos": "prep. 介系詞"
+  },
+  "one": {
+    "zh": "一、一個",
+    "ipa": "wʌn",
+    "pos": "num. 數字 / pron. 代名詞"
+  },
+  "organic": {
+    "zh": "有機的",
+    "ipa": "ɔːˈɡænɪk",
+    "pos": "adj. 形容詞"
+  },
+  "our": {
+    "zh": "我們的",
+    "ipa": "aʊər",
+    "pos": "pron. 代名詞 (所有格)"
+  },
+  "outdoor": {
+    "zh": "戶外的",
+    "ipa": "ˈaʊtdɔːr",
+    "pos": "adj. 形容詞"
+  },
+  "own": {
+    "zh": "自己的 / 擁有",
+    "ipa": "əʊn",
+    "pos": "adj. 形容詞 / v. 動詞"
+  },
+  "park": {
+    "zh": "公園",
+    "ipa": "pɑːk",
+    "pos": "n. 名詞"
+  },
+  "people": {
+    "zh": "人們",
+    "ipa": "ˈpiːpl",
+    "pos": "n. 名詞"
+  },
+  "picture": {
+    "zh": "照片、圖片",
+    "ipa": "ˈpɪktʃər",
+    "pos": "n. 名詞"
+  },
+  "play": {
+    "zh": "玩、打(球)",
+    "ipa": "pleɪ",
+    "pos": "v. 動詞"
+  },
+  "please": {
+    "zh": "請 / 使高興",
+    "ipa": "pliːz",
+    "pos": "adv. 副詞 / v. 動詞"
+  },
+  "poke": {
+    "zh": "夏威夷拌飯 (Poke Bowl)",
+    "ipa": "pəʊk",
+    "pos": "n. 名詞"
+  },
+  "rice": {
+    "zh": "米飯、稻米",
+    "ipa": "raɪs",
+    "pos": "n. 名詞"
+  },
+  "ride": {
+    "zh": "騎",
+    "ipa": "raɪd",
+    "pos": "v. 動詞"
+  },
+  "share": {
+    "zh": "分享",
+    "ipa": "ʃeər",
+    "pos": "v. 動詞"
+  },
+  "sharing": {
+    "zh": "分享",
+    "ipa": "ˈʃeərɪŋ",
+    "pos": "n. 名詞 / v. 動詞的現在分詞"
+  },
+  "she": {
+    "zh": "她",
+    "ipa": "ʃiː",
+    "pos": "pron. 代名詞 (主格)"
+  },
+  "she's": {
+    "zh": "她是",
+    "ipa": "ʃiːz",
+    "pos": "cont. 縮寫"
+  },
+  "shopping": {
+    "zh": "購物",
+    "ipa": "ˈʃɒpɪŋ",
+    "pos": "n. 名詞 (go shopping: 去購物)"
+  },
+  "short": {
+    "zh": "短的、矮的",
+    "ipa": "ʃɔːt",
+    "pos": "adj. 形容詞"
+  },
+  "smartphone": {
+    "zh": "智慧型手機",
+    "ipa": "ˈsmɑːtfəʊn",
+    "pos": "n. 名詞"
+  },
+  "some": {
+    "zh": "一些",
+    "ipa": "sʌm",
+    "pos": "adj. 形容詞 / pron. 代名詞"
+  },
+  "something": {
+    "zh": "某事、某物",
+    "ipa": "ˈsʌmθɪŋ",
+    "pos": "pron. 代名詞"
+  },
+  "sounds": {
+    "zh": "聽起來 (三單)",
+    "ipa": "saʊndz",
+    "pos": "v. 動詞 (Sounds cool: 聽起來很酷)"
+  },
+  "soup": {
+    "zh": "湯",
+    "ipa": "suːp",
+    "pos": "n. 名詞"
+  },
+  "speak": {
+    "zh": "說、講 (語言)",
+    "ipa": "spiːk",
+    "pos": "v. 動詞"
+  },
+  "steve": {
+    "zh": "史蒂夫",
+    "ipa": "stiːv",
+    "pos": "prop. n. 專有名詞"
+  },
+  "sunday": {
+    "zh": "星期日",
+    "ipa": "ˈsʌndeɪ",
+    "pos": "prop. n. 專有名詞"
+  },
+  "taiwan": {
+    "zh": "台灣",
+    "ipa": "ˌtaɪˈwɑːn",
+    "pos": "prop. n. 專有名詞"
+  },
+  "thank": {
+    "zh": "感謝",
+    "ipa": "θæŋk",
+    "pos": "v. 動詞"
+  },
+  "that's": {
+    "zh": "那是",
+    "ipa": "ðæts",
+    "pos": "cont. 縮寫"
+  },
+  "the": {
+    "zh": "這、那 (定冠詞)",
+    "ipa": "ðə",
+    "pos": "art. 冠詞"
+  },
+  "their": {
+    "zh": "他們的",
+    "ipa": "ðeər",
+    "pos": "pron. 代名詞 (所有格)"
+  },
+  "there": {
+    "zh": "那裡",
+    "ipa": "ðeər",
+    "pos": "adv. 副詞"
+  },
+  "these": {
+    "zh": "這些",
+    "ipa": "ðiːz",
+    "pos": "pron. 代名詞 / adj. 形容詞"
+  },
+  "this": {
+    "zh": "這、這個",
+    "ipa": "ðɪs",
+    "pos": "pron. 代名詞 / adj. 形容詞"
+  },
+  "three": {
+    "zh": "三",
+    "ipa": "θriː",
+    "pos": "num. 數字"
+  },
+  "time": {
+    "zh": "時間、次數",
+    "ipa": "taɪm",
+    "pos": "n. 名詞"
+  },
+  "to": {
+    "zh": "到、向、去 / 不定式符號",
+    "ipa": "tuː",
+    "pos": "prep. 介系詞 / inf. 不定式"
+  },
+  "today": {
+    "zh": "今天",
+    "ipa": "təˈdeɪ",
+    "pos": "n. 名詞 / adv. 副詞"
+  },
+  "together": {
+    "zh": "一起",
+    "ipa": "təˈɡeðər",
+    "pos": "adv. 副詞"
+  },
+  "town": {
+    "zh": "城鎮、鎮上",
+    "ipa": "taʊn",
+    "pos": "n. 名詞"
+  },
+  "us": {
+    "zh": "我們 (受格)",
+    "ipa": "ʌs",
+    "pos": "pron. 代名詞"
+  },
+  "usa": {
+    "zh": "美國",
+    "ipa": "ˌjuːesˈeɪ",
+    "pos": "prop. n. 專有名詞"
+  },
+  "vegetables": {
+    "zh": "蔬菜 (複數)",
+    "ipa": "ˈvedʒtəblz",
+    "pos": "n. 名詞"
+  },
+  "vietnam": {
+    "zh": "越南",
+    "ipa": "ˌvjetˈnæm",
+    "pos": "prop. n. 專有名詞"
+  },
+  "visit": {
+    "zh": "拜訪、參觀",
+    "ipa": "ˈvɪzɪt",
+    "pos": "v. 動詞"
+  },
+  "want": {
+    "zh": "想要",
+    "ipa": "wɒnt",
+    "pos": "v. 動詞"
+  },
+  "watermelons": {
+    "zh": "西瓜 (複數)",
+    "ipa": "ˈwɔːtəmelənz",
+    "pos": "n. 名詞"
+  },
+  "way": {
+    "zh": "方法、道路",
+    "ipa": "weɪ",
+    "pos": "n. 名詞"
+  },
+  "we": {
+    "zh": "我們",
+    "ipa": "wiː",
+    "pos": "pron. 代名詞 (主格)"
+  },
+  "well": {
+    "zh": "好地",
+    "ipa": "wel",
+    "pos": "adv. 副詞"
+  },
+  "wendy's": {
+    "zh": "Wendy 的",
+    "ipa": "ˈwendiz",
+    "pos": "prop. n. 專有名詞屬格"
+  },
+  "what": {
+    "zh": "什麼",
+    "ipa": "wɒt",
+    "pos": "pron. 代名詞 / adj. 形容詞"
+  },
+  "with": {
+    "zh": "與...一起、伴隨、用",
+    "ipa": "wɪð",
+    "pos": "prep. 介系詞"
+  },
+  "work": {
+    "zh": "工作、勞動",
+    "ipa": "wɜːk",
+    "pos": "n. 名詞 / v. 動詞"
+  },
+  "would": {
+    "zh": "將要、想要",
+    "ipa": "wʊd",
+    "pos": "aux. 助動詞"
+  },
+  "years": {
+    "zh": "年、歲 (複數)",
+    "ipa": "jɪəz",
+    "pos": "n. 名詞"
+  },
+  "yes": {
+    "zh": "是的",
+    "ipa": "jes",
+    "pos": "adv. 副詞 / int. 感嘆詞"
+  },
+  "yoshi": {
+    "zh": "吉 (人名)",
+    "ipa": "ˈjəʊʃi",
+    "pos": "prop. n. 專有名詞"
+  },
+  "you": {
+    "zh": "你、你們",
+    "ipa": "juː",
+    "pos": "pron. 代名詞"
+  },
+  "you're": {
+    "zh": "你是",
+    "ipa": "jɔːr",
+    "pos": "cont. 縮寫"
+  },
+  "your": {
+    "zh": "你的、你們的",
+    "ipa": "jɔːr",
+    "pos": "pron. 代名詞 (所有格)"
+  }
+};
+
+    // Application State Variables
+    let currentTab = 'lesson1';
+    let isPlaying = false;
+    let isPaused = false;
+    
+    // Arrays tracking sentence components
+    let lessonSentences = [];
+    let currentSentenceIdx = -1;
+    let activeUtterance = null;
+    let lastSelectedWordSpan = null;
+
+    // Load active voice safely
+    let enVoice = null;
+    function loadVoice() {
+      const voices = window.speechSynthesis.getVoices();
+      enVoice = voices.find(v => v.lang === 'en-US') || 
+                voices.find(v => v.lang === 'en-GB') || 
+                voices.find(v => v.lang.startsWith('en')) || 
+                null;
+    }
+    
+    if (window.speechSynthesis.onvoiceschanged !== undefined) {
+      window.speechSynthesis.onvoiceschanged = loadVoice;
+    }
+    loadVoice();
+
+    // Tokenizer function: wraps alphabetical words in spans, preserving punctuation
+    function tokenizeHTML(text) {
+      // Regex detects words, including hyphenated ones (add-ons) and contractions (I'm, Wendy's)
+      const parts = text.split(/([a-zA-Z']+(?:-[a-zA-Z']+)*)/);
+      return parts.map(part => {
+        if (/^[a-zA-Z']+(?:-[a-zA-Z']+)*$/.test(part)) {
+          const lookupKey = part.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
+          return `<span class="word" data-word="${lookupKey}" onclick="wordClicked(event, this)">${part}</span>`;
+        }
+        return part;
+      }).join('');
+    }
+
+    // Render the active tab content
+    function renderLesson(lessonId) {
+      const lesson = LESSON_DATA[lessonId];
+      document.getElementById('lesson-title-display').innerHTML = `${lesson.icon} ${lesson.title}`;
+      
+      const container = document.getElementById('paragraphs-container');
+      container.innerHTML = '';
+      
+      lessonSentences = []; // rebuild sentences array for player tracking
+      
+      lesson.paragraphs.forEach(para => {
+        const paraCard = document.createElement('div');
+        paraCard.className = 'paragraph-card';
+        
+        const engBlock = document.createElement('div');
+        engBlock.className = 'english-para';
+        
+        para.sentences.forEach(sent => {
+          // Add to player queue
+          lessonSentences.push(sent);
+          
+          const sentSpan = document.createElement('span');
+          sentSpan.className = 'sentence-block';
+          sentSpan.id = `sent-block-${sent.id}`;
+          
+          // Speaker icon for individual reading
+          const speakerIcon = document.createElement('span');
+          speakerIcon.className = 'play-sentence-icon';
+          speakerIcon.innerHTML = '🔊';
+          speakerIcon.title = '朗讀此句';
+          speakerIcon.onclick = (e) => {
+            e.stopPropagation();
+            playIndividualSentence(sent);
+          };
+          
+          sentSpan.appendChild(speakerIcon);
+          
+          // Wrap words in token spans
+          const wordContainer = document.createElement('span');
+          wordContainer.innerHTML = tokenizeHTML(sent.english) + ' ';
+          sentSpan.appendChild(wordContainer);
+          
+          engBlock.appendChild(sentSpan);
+        });
+        
+        paraCard.appendChild(engBlock);
+        
+        // Chinese translation block
+        const zhBlock = document.createElement('div');
+        zhBlock.className = 'chinese-para';
+        zhBlock.innerText = para.chineseTranslation;
+        paraCard.appendChild(zhBlock);
+        
+        container.appendChild(paraCard);
+      });
+    }
+
+    // Tab Switching
+    function switchTab(lessonId) {
+      if (lessonId === currentTab) return;
+      
+      // Stop voice output immediately
+      stopLesson();
+      
+      // Toggle tab buttons
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelector(`.tab-btn[data-tab="${lessonId}"]`).classList.add('active');
+      
+      currentTab = lessonId;
+      renderLesson(lessonId);
+      closeLookupPanel();
+    }
+
+    // Realtime speaking rate display
+    function updateSpeedLabel(val) {
+      document.getElementById('speed-label').innerText = `${val}x`;
+    }
+
+    // Audio highlighting state
+    function highlightSentence(sentenceId) {
+      document.querySelectorAll('.sentence-block').forEach(block => {
+        block.classList.remove('active-sentence');
+      });
+      const target = document.getElementById(`sent-block-${sentenceId}`);
+      if (target) {
+        target.classList.add('active-sentence');
+        target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    function clearAllHighlights() {
+      document.querySelectorAll('.sentence-block').forEach(block => {
+        block.classList.remove('active-sentence');
+      });
+    }
+
+    // TTS Player Functions
+    function playLesson() {
+      if (isPaused) {
+        window.speechSynthesis.resume();
+        isPlaying = true;
+        isPaused = false;
+        return;
+      }
+      
+      stopLesson(); // Reset playback to beginning
+      isPlaying = true;
+      currentSentenceIdx = 0;
+      speakSentenceQueue();
+    }
+
+    // Pause
+    function pauseLesson() {
+      if (isPlaying && !isPaused) {
+        window.speechSynthesis.pause();
+        isPlaying = false;
+        isPaused = true;
+      }
+    }
+
+    // Stop
+    function stopLesson() {
+      window.speechSynthesis.cancel();
+      isPlaying = false;
+      isPaused = false;
+      currentSentenceIdx = -1;
+      clearAllHighlights();
+    }
+
+    function speakSentenceQueue() {
+      if (!isPlaying) return;
+      if (currentSentenceIdx < 0 || currentSentenceIdx >= lessonSentences.length) {
+        stopLesson();
+        return;
+      }
+      
+      const sentenceObj = lessonSentences[currentSentenceIdx];
+      highlightSentence(sentenceObj.id);
+      
+      activeUtterance = new SpeechSynthesisUtterance(sentenceObj.english);
+      if (enVoice) activeUtterance.voice = enVoice;
+      
+      // Apply speech rate
+      const rateVal = parseFloat(document.getElementById('speed-slider').value);
+      activeUtterance.rate = rateVal;
+      
+      activeUtterance.onend = () => {
+        currentSentenceIdx++;
+        speakSentenceQueue();
+      };
+      
+      activeUtterance.onerror = (e) => {
+        console.error('Speech synthesis error:', e);
+        stopLesson();
+      };
+      
+      window.speechSynthesis.speak(activeUtterance);
+    }
+
+    // Individual sentence playback
+    function playIndividualSentence(sentenceObj) {
+      stopLesson();
+      
+      highlightSentence(sentenceObj.id);
+      
+      const utter = new SpeechSynthesisUtterance(sentenceObj.english);
+      if (enVoice) utter.voice = enVoice;
+      utter.rate = parseFloat(document.getElementById('speed-slider').value);
+      
+      utter.onend = () => {
+        clearAllHighlights();
+      };
+      
+      utter.onerror = () => {
+        clearAllHighlights();
+      };
+      
+      window.speechSynthesis.speak(utter);
+    }
+
+    // Word Lookup Logic
+    function wordClicked(event, element) {
+      event.stopPropagation();
+      
+      if (lastSelectedWordSpan) {
+        lastSelectedWordSpan.classList.remove('selected-word');
+      }
+      
+      element.classList.add('selected-word');
+      lastSelectedWordSpan = element;
+      
+      const lookupWord = element.getAttribute('data-word');
+      showWordDefinition(lookupWord);
+    }
+
+    function showWordDefinition(wordKey) {
+      const wordObj = WORD_DB[wordKey];
+      const panel = document.getElementById('lookup-panel');
+      const prompt = document.getElementById('lookup-prompt');
+      const details = document.getElementById('lookup-details');
+      
+      // Load vocabulary definitions
+      if (wordObj) {
+        document.getElementById('info-word').innerText = wordKey;
+        document.getElementById('info-ipa').innerText = `[${wordObj.ipa}]`;
+        document.getElementById('info-pos').innerText = wordObj.pos;
+        document.getElementById('info-zh').innerText = wordObj.zh;
+      } else {
+        // Fallback for compound words / special names not fully covered
+        document.getElementById('info-word').innerText = wordKey;
+        document.getElementById('info-ipa').innerText = '[ - ]';
+        document.getElementById('info-pos').innerText = '單字';
+        document.getElementById('info-zh').innerText = '點擊發音 (課表外單字)';
+      }
+      
+      // Update UI panels
+      prompt.style.display = 'none';
+      details.classList.add('active');
+      panel.classList.remove('empty');
+      
+      // Mobile handling
+      if (window.innerWidth <= 900) {
+        panel.classList.add('mobile-active');
+        document.getElementById('backdrop').classList.add('active');
+      }
+    }
+
+    function closeLookupPanel() {
+      const panel = document.getElementById('lookup-panel');
+      const prompt = document.getElementById('lookup-prompt');
+      const details = document.getElementById('lookup-details');
+      
+      prompt.style.display = 'block';
+      details.classList.remove('active');
+      panel.classList.add('empty');
+      panel.classList.remove('mobile-active');
+      document.getElementById('backdrop').classList.remove('active');
+      
+      if (lastSelectedWordSpan) {
+        lastSelectedWordSpan.classList.remove('selected-word');
+        lastSelectedWordSpan = null;
+      }
+    }
+
+    // Speak single word in lookup
+    function pronounceWord() {
+      const wordText = document.getElementById('info-word').innerText;
+      if (!wordText) return;
+      
+      // Stop current reading briefly
+      window.speechSynthesis.cancel();
+      
+      const utter = new SpeechSynthesisUtterance(wordText);
+      if (enVoice) utter.voice = enVoice;
+      utter.rate = parseFloat(document.getElementById('speed-slider').value);
+      window.speechSynthesis.speak(utter);
+    }
+
+    // Initialization on window load
+    window.onload = () => {
+      renderLesson('lesson1');
+      loadVoice();
+    };
+  </script>
+</body>
+</html>

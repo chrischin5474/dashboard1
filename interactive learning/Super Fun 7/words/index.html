@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Super Fun 7 Vocabulary Game for Kids - Interactive English word learning slot machine.">
+  <title>Super Fun 7 - Word Spinner</title>
+  <!-- Google Fonts for playful, rounded modern typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="game-container">
+    <!-- Header Area -->
+    <header class="header">
+      <h1 class="title">SUPER FUN 7</h1>
+      <p class="subtitle">Word Spinner Game 🎰</p>
+    </header>
+
+    <!-- Lesson Selection Panel -->
+    <section class="lesson-selector" aria-label="Lesson Selection">
+      <a href="../index.html" class="lesson-btn" style="text-decoration: none; background: rgba(255, 255, 255, 0.15); color: #fff; border-color: rgba(255, 255, 255, 0.3); display: inline-flex; align-items: center; gap: 8px;">
+        <span class="btn-icon">🏠</span>
+        <span class="btn-text">返回傳送門</span>
+      </a>
+      <button class="lesson-btn active" id="btn-l1" data-lesson="1">
+        <span class="btn-icon">🌟</span>
+        <span class="btn-text">Lesson 1</span>
+      </button>
+      <button class="lesson-btn" id="btn-l2" data-lesson="2">
+        <span class="btn-icon">⚡</span>
+        <span class="btn-text">Lesson 2</span>
+      </button>
+      <button class="lesson-btn" id="btn-l3" data-lesson="3">
+        <span class="btn-icon">🍉</span>
+        <span class="btn-text">Lesson 3</span>
+      </button>
+      <button class="lesson-btn" id="btn-l4" data-lesson="4">
+        <span class="btn-icon">🍳</span>
+        <span class="btn-text">Lesson 4</span>
+      </button>
+      <button class="lesson-btn mixed" id="btn-lall" data-lesson="all">
+        <span class="btn-icon">🎨</span>
+        <span class="btn-text">Mix All</span>
+      </button>
+    </section>
+
+    <!-- Slot Machine Box -->
+    <main class="spinner-cabinet">
+      <!-- Left side decorative lights -->
+      <div class="lights-panel left" id="lights-left"></div>
+
+      <!-- Center Spinner Viewport -->
+      <div class="viewport-outer">
+        <div class="viewport-inner">
+          <div class="display-container" id="display-container">
+            <!-- Spinner items will be dynamically generated and scrolled here -->
+            <div class="word-card initial" id="word-card">
+              <span class="word-text" id="display-word">Select a Lesson!</span>
+              <span class="translation-text hidden" id="display-translation">選擇課程並拉霸！</span>
+            </div>
+          </div>
+        </div>
+        <!-- Shadow overlays for 3D depth -->
+        <div class="inner-shadow-top"></div>
+        <div class="inner-shadow-bottom"></div>
+      </div>
+
+      <!-- Right side decorative lights -->
+      <div class="lights-panel right" id="lights-right"></div>
+
+      <!-- Tactile Lever Structure -->
+      <div class="lever-assembly" id="lever-assembly">
+        <div class="lever-base"></div>
+        <div class="lever-shaft-container">
+          <div class="lever-shaft" id="lever-shaft">
+            <div class="lever-ball" id="lever-ball"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Interactive Controller Buttons -->
+    <section class="control-panel" aria-label="Controls">
+      <!-- Show/Hide Translation Button -->
+      <button class="control-btn reveal-btn" id="btn-translation" disabled>
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+        <span>Show Meaning</span>
+      </button>
+
+      <!-- Spin Trigger Button (For mobile/touch screen click ease) -->
+      <button class="control-btn spin-btn" id="btn-spin">
+        <span class="btn-spin-text">SPIN NOW!</span>
+      </button>
+
+      <!-- Pronunciation Audio Player Button -->
+      <button class="control-btn speak-btn" id="btn-speak" disabled>
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+        </svg>
+        <span>Listen</span>
+      </button>
+    </section>
+
+    <!-- Footer Help Info -->
+    <footer class="game-footer">
+      <p class="keyboard-tip">⌨️ Pro-Tip: Press <strong>SPACEBAR</strong> to pull the lever and spin!</p>
+    </footer>
+  </div>
+
+  <!-- Audio Context Initialization Modal overlay for iOS/Safari compliance -->
+  <div class="overlay hidden" id="audio-overlay">
+    <div class="overlay-card">
+      <h2>🎰 Ready to Play? 🌟</h2>
+      <p>Tap start to enable cool sound effects and voices!</p>
+      <button class="start-btn" id="btn-start-game">Let's Go! 🚀</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

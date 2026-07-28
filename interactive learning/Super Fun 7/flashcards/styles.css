@@ -1,0 +1,568 @@
+/* CSS Design System for Super Fun 7 Phonics Flashcards */
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700;900&family=Fredoka:wght@400;600;700&family=Noto+Sans+TC:wght@500;700;900&family=Outfit:wght@400;600;800&display=swap');
+
+:root {
+  /* Phonics Color Coding System */
+  --color-vowel: #FF6B6B;      /* Coral Red */
+  --color-blend: #4D96FF;      /* Sky Blue */
+  --color-digraph: #6BCB77;    /* Mint Green */
+  --color-consonant: #2C3E50;  /* Dark Charcoal */
+  --color-space: #2C3E50;
+
+  /* App Aesthetics Brand Palette */
+  --bg-gradient: linear-gradient(135deg, #FFF3E0 0%, #FFF0F5 50%, #E3F2FD 100%);
+  --card-bg: #FFFFFF;
+  --card-border: 8px solid rgba(255, 255, 255, 0.9);
+  --card-shadow: 0 20px 45px rgba(0, 0, 0, 0.05), 0 5px 15px rgba(0, 0, 0, 0.02);
+  --card-shadow-hover: 0 30px 60px rgba(0, 0, 0, 0.1), 0 10px 25px rgba(0, 0, 0, 0.04);
+  
+  /* Text and Bubble styling */
+  --bubble-bg: #F1F8FF;
+  --bubble-text: #0366D6;
+  --bubble-border: #C8E1FF;
+  
+  /* Fonts */
+  --font-en: 'Fredoka', 'Outfit', sans-serif;
+  --font-zh: 'Noto Sans TC', sans-serif;
+}
+
+/* Reset and Global Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-en);
+  background: var(--bg-gradient);
+  color: var(--color-consonant);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  overflow-x: hidden;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 1020px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+
+/* Header Sections */
+.app-header {
+  text-align: center;
+  width: 100%;
+}
+
+.app-title {
+  font-size: clamp(2.2rem, 5.5vw, 3rem);
+  font-weight: 800;
+  color: #2C3E50;
+  text-shadow: 2px 2px 0px #FFFFFF;
+  margin-bottom: 5px;
+  letter-spacing: 1px;
+}
+
+.app-subtitle {
+  font-family: var(--font-zh);
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  color: #7F8C8D;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* Lesson Tab Navigation */
+.lesson-navigation {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  flex-wrap: wrap;
+  margin-bottom: 5px;
+}
+
+.tab-btn {
+  font-family: var(--font-en);
+  font-size: 1.15rem;
+  font-weight: 800;
+  padding: 12px 28px;
+  border-radius: 20px;
+  border: 3px solid #FFFFFF;
+  background: rgba(255, 255, 255, 0.7);
+  color: #475569;
+  cursor: pointer;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.03);
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.tab-btn:hover {
+  background: #FFFFFF;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, #FF9F43 0%, #FFB167 100%);
+  color: #FFFFFF;
+  border-color: #FFD9B3;
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 10px 22px rgba(255, 159, 67, 0.3);
+}
+
+/* Legend block */
+.phonics-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 12px 28px;
+  border-radius: 50px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.02);
+  border: 2px dashed #CBD5E1;
+  margin-bottom: 5px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-family: var(--font-zh);
+}
+
+.color-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.legend-item.vowel .color-dot { background-color: var(--color-vowel); }
+.legend-item.blend .color-dot { background-color: var(--color-blend); }
+.legend-item.digraph .color-dot { background-color: var(--color-digraph); }
+.legend-item.consonant .color-dot { background-color: var(--color-consonant); }
+
+.legend-item.vowel .legend-text { color: var(--color-vowel); }
+.legend-item.blend .legend-text { color: var(--color-blend); }
+.legend-item.digraph .legend-text { color: var(--color-digraph); }
+.legend-item.consonant .legend-text { color: var(--color-consonant); }
+
+/* Main Card Presentation Container */
+.flashcard-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.flashcard {
+  width: 100%;
+  max-width: 900px;
+  min-height: 600px;
+  background-color: var(--card-bg);
+  border-radius: 40px;
+  border: var(--card-border);
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 35px 50px;
+  position: relative;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+  overflow: hidden;
+}
+
+.flashcard:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+/* Card Section 1: TOP ILLUSTRATION CENTERED */
+.card-top {
+  width: 100%;
+  height: 220px;
+  display: flex;
+  justify-content: center; /* ALWAYS CENTERED FOR ALL LESSONS */
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.card-image-container {
+  width: 220px;
+  height: 220px;
+  border-radius: 24px;
+  overflow: hidden;
+  background-color: #FAFAFA;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.5s ease;
+  border: 3px solid #FFF5F5;
+}
+
+.flashcard:hover .card-image-container {
+  transform: scale(1.06) rotate(1.5deg);
+}
+
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Inline SVG inside top container styling */
+.card-image-container svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Card Section 2: MIDDLE PHONICS WORD */
+.card-middle {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+  overflow: hidden;
+}
+
+.word-container {
+  display: flex;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  font-family: var(--font-en);
+  font-size: clamp(3.2rem, 8.5vw, 5.8rem);
+  font-weight: 900;
+  letter-spacing: 2px;
+  align-items: center;
+  user-select: none;
+}
+
+.word-letter {
+  display: inline-block;
+  transition: transform 0.2s ease, filter 0.2s ease;
+  cursor: pointer;
+  font-weight: 800;
+  -webkit-text-stroke: 1.5px currentColor;
+}
+
+.word-letter:hover {
+  transform: scale(1.18) translateY(-6px);
+  filter: brightness(1.1);
+}
+
+.word-letter.vowel {
+  color: var(--color-vowel);
+  text-shadow: 0 3px 0px rgba(255, 107, 107, 0.15);
+}
+
+.word-letter.blend {
+  color: var(--color-blend);
+  text-shadow: 0 3px 0px rgba(77, 150, 255, 0.15);
+}
+
+.word-letter.digraph {
+  color: var(--color-digraph);
+  text-shadow: 0 3px 0px rgba(107, 203, 119, 0.15);
+}
+
+.word-letter.consonant {
+  color: var(--color-consonant);
+}
+
+/* Class mappings for lesson 4 */
+.word-letter.phonics-vowel {
+  color: var(--color-vowel);
+  text-shadow: 0 3px 0px rgba(255, 107, 107, 0.15);
+}
+
+.word-letter.phonics-blend {
+  color: var(--color-blend);
+  text-shadow: 0 3px 0px rgba(77, 150, 255, 0.15);
+}
+
+.word-letter.phonics-digraph {
+  color: var(--color-digraph);
+  text-shadow: 0 3px 0px rgba(107, 203, 119, 0.15);
+}
+
+.word-letter.phonics-consonant {
+  color: var(--color-consonant);
+}
+
+.word-letter.space, .word-letter.phonics-space {
+  width: clamp(1rem, 2.5vw, 2.2rem);
+  cursor: default;
+}
+
+/* Card Section 3: BOTTOM CHINESE TRANSLATION */
+.card-bottom {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.translation-bubble {
+  font-family: var(--font-zh);
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--bubble-text);
+  background-color: var(--bubble-bg);
+  border: 3px solid var(--bubble-border);
+  padding: 10px 40px;
+  border-radius: 30px;
+  box-shadow: 0 6px 0px var(--bubble-border);
+  display: inline-block;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.flashcard:hover .translation-bubble {
+  transform: scale(1.05);
+}
+
+/* Interactive Card Transitions */
+.flashcard.fade-out {
+  opacity: 0;
+  transform: scale(0.95) translateY(10px);
+}
+
+.flashcard.fade-in {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+/* Dashboard Control Panel */
+.app-controls {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.control-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-en);
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 12px 24px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  user-select: none;
+}
+
+.btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.icon {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+.icon-large {
+  width: 26px;
+  height: 26px;
+}
+
+/* Button Theming */
+.btn-primary {
+  background: linear-gradient(135deg, #FF8008, #FFC837);
+  color: #FFFFFF;
+  padding: 16px 36px;
+  font-size: 1.25rem;
+  border-radius: 28px;
+  box-shadow: 0 10px 25px rgba(255, 128, 8, 0.25);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(255, 128, 8, 0.35);
+}
+
+.btn-primary:active {
+  transform: translateY(3px);
+  box-shadow: 0 3px 10px rgba(255, 128, 8, 0.25);
+}
+
+.btn-secondary {
+  background: #FFFFFF;
+  color: #2C3E50;
+  border: 3px solid #E2E8F0;
+  box-shadow: 0 5px 0px #E2E8F0;
+}
+
+.btn-secondary:hover {
+  background: #F8FAFC;
+  border-color: #CBD5E1;
+  transform: translateY(-2px);
+}
+
+.btn-secondary:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0px #E2E8F0;
+}
+
+.btn-accent {
+  background: linear-gradient(135deg, #00C6FF, #0072FF);
+  color: #FFFFFF;
+  box-shadow: 0 8px 20px rgba(0, 114, 255, 0.2);
+}
+
+.btn-accent:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 114, 255, 0.3);
+}
+
+.btn-accent:active {
+  transform: translateY(3px);
+}
+
+.btn-accent.active {
+  background: linear-gradient(135deg, #F857A6, #FF5858);
+  box-shadow: 0 8px 20px rgba(248, 87, 166, 0.3);
+  animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+  0% { box-shadow: 0 0 0 0 rgba(248, 87, 166, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(248, 87, 166, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(248, 87, 166, 0); }
+}
+
+/* Indicators Dots */
+.dots-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 5px;
+  height: 20px;
+  align-items: center;
+}
+
+.dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: #CBD5E1;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.dot:hover {
+  background-color: #94A3B8;
+  transform: scale(1.2);
+}
+
+.dot.active {
+  background-color: #FF8008;
+  width: 28px;
+  border-radius: 10px;
+}
+
+/* Keyboard Guide Tip */
+.keyboard-tips {
+  font-family: var(--font-zh);
+  font-size: 0.85rem;
+  color: #64748B;
+  background-color: rgba(255, 255, 255, 0.6);
+  padding: 8px 20px;
+  border-radius: 15px;
+  border: 1px dashed rgba(0, 0, 0, 0.1);
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Responsive Scaling Layouts */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+  
+  .app-container {
+    gap: 18px;
+  }
+
+  .lesson-navigation {
+    gap: 8px;
+  }
+
+  .tab-btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+  }
+
+  .phonics-legend {
+    padding: 10px 20px;
+    gap: 10px;
+  }
+  
+  .flashcard {
+    min-height: 520px;
+    padding: 25px;
+  }
+
+  .card-top {
+    height: 170px;
+  }
+
+  .card-image-container {
+    width: 170px;
+    height: 170px;
+  }
+
+  .word-container {
+    font-size: clamp(2.4rem, 8vw, 4.2rem);
+  }
+
+  .translation-bubble {
+    font-size: 1.8rem;
+    padding: 8px 28px;
+  }
+
+  .btn {
+    padding: 10px 18px;
+    font-size: 1rem;
+  }
+
+  .btn-primary {
+    padding: 12px 28px;
+    font-size: 1.15rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn-label-text {
+    display: none; /* Hide labels on very small screens to fit buttons */
+  }
+}

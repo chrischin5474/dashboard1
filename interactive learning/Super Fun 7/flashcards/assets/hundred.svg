@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" width="220" height="220">
+  <defs>
+    <filter id="shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="3" dy="5" stdDeviation="4" flood-color="#90A4AE" flood-opacity="0.4"/>
+    </filter>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF8A8A"/>
+      <stop offset="100%" stop-color="#FF5252"/>
+    </linearGradient>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#64B5F6"/>
+      <stop offset="100%" stop-color="#1E88E5"/>
+    </linearGradient>
+    <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#81C784"/>
+      <stop offset="100%" stop-color="#43A047"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="#FFFFFF"/>
+
+  <!-- Sparkles/Confetti -->
+  <path d="M 30,50 L 35,40 L 40,50 L 50,45 L 42,55 L 48,65 L 38,60 L 30,65 L 34,55 Z" fill="#FFF59D"/>
+  <circle cx="180" cy="60" r="6" fill="#F8BBD0"/>
+  <circle cx="45" cy="160" r="5" fill="#E0F2F1"/>
+  <path d="M 175,150 L 180,140 L 185,150 L 195,148 L 187,156 L 192,166 L 182,160 L 175,165 L 178,155 Z" fill="#FFE082"/>
+
+  <!-- Group with Shadow -->
+  <g filter="url(#shadow)">
+    <!-- Number 1 -->
+    <g transform="translate(35, 70)">
+      <path d="M 12,0 C 18,0 24,6 24,12 L 24,78 C 24,84 18,90 12,90 C 6,90 0,84 0,78 L 0,12 C 0,6 6,0 12,0 Z" fill="url(#grad1)"/>
+      <path d="M 12,0 C 6,0 0,6 0,12 L 0,22 C 0,25 -2,27 -5,25 L -10,21 C -14,18 -14,12 -10,8 L -2,2 C 2,-2 8,0 12,0 Z" fill="url(#grad1)"/>
+      <!-- Eyes on 1 -->
+      <circle cx="12" cy="25" r="2.5" fill="#FFFFFF"/>
+    </g>
+
+    <!-- First Number 0 -->
+    <g transform="translate(75, 70)">
+      <rect x="0" y="0" width="46" height="90" rx="23" fill="url(#grad2)"/>
+      <rect x="13" y="18" width="20" height="54" rx="10" fill="#FFFFFF"/>
+      <!-- Cute Face on First 0 -->
+      <circle cx="17" cy="38" r="3" fill="#0D47A1"/>
+      <circle cx="29" cy="38" r="3" fill="#0D47A1"/>
+      <path d="M 20,44 q3 3 6 0" fill="none" stroke="#0D47A1" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="13" cy="41" r="2.5" fill="#FFCDD2"/>
+      <circle cx="33" cy="41" r="2.5" fill="#FFCDD2"/>
+    </g>
+
+    <!-- Second Number 0 -->
+    <g transform="translate(135, 70)">
+      <rect x="0" y="0" width="46" height="90" rx="23" fill="url(#grad3)"/>
+      <rect x="13" y="18" width="20" height="54" rx="10" fill="#FFFFFF"/>
+      <!-- Cute Face on Second 0 -->
+      <circle cx="17" cy="38" r="3" fill="#1B5E20"/>
+      <circle cx="29" cy="38" r="3" fill="#1B5E20"/>
+      <path d="M 21,43 q2 4 4 0" fill="none" stroke="#1B5E20" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="13" cy="41" r="2.5" fill="#FFCDD2"/>
+      <circle cx="33" cy="41" r="2.5" fill="#FFCDD2"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Fun 7 英文互動閱讀測驗</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(23, 28, 41, 0.75);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --primary-grad: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            --primary-glow: rgba(79, 172, 254, 0.4);
+            --success-color: #10b981;
+            --success-bg: rgba(16, 185, 129, 0.15);
+            --success-border: rgba(16, 185, 129, 0.3);
+            --error-color: #ef4444;
+            --error-bg: rgba(239, 68, 68, 0.15);
+            --error-border: rgba(239, 68, 68, 0.3);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-zh: #cbd5e1;
+            --accent-pink: #f43f5e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Background glows */
+        body::before, body::after {
+            content: "";
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: -1;
+            opacity: 0.3;
+        }
+        body::before {
+            background: #00f2fe;
+            top: -100px;
+            left: -100px;
+        }
+        body::after {
+            background: #8b5cf6;
+            bottom: -100px;
+            right: -100px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 680px;
+            padding: 20px;
+            perspective: 1000px;
+        }
+
+        /* Glass Card */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Top Progress */
+        .progress-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .progress-bar-wrapper {
+            flex-grow: 1;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-right: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--primary-grad);
+            border-radius: 10px;
+            transition: width 0.4s ease;
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .progress-text {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-muted);
+            min-width: 60px;
+            text-align: right;
+            letter-spacing: 0.5px;
+        }
+
+        /* Header info */
+        .quiz-header {
+            margin-bottom: 24px;
+        }
+
+        .quiz-title {
+            font-size: 28px;
+            font-weight: 800;
+            background: var(--primary-grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .quiz-subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Screen state toggles */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Intro Screen */
+        .intro-illustration {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: rgba(79, 172, 254, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(79, 172, 254, 0.2);
+            box-shadow: 0 0 20px rgba(79, 172, 254, 0.05);
+        }
+
+        .intro-illustration svg {
+            width: 38px;
+            height: 38px;
+            stroke: #00f2fe;
+        }
+
+        .intro-title {
+            font-size: 32px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 8px;
+            background: var(--primary-grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .intro-desc {
+            font-size: 15px;
+            color: var(--text-muted);
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        /* Topic Selector Styles */
+        .topic-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .topic-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 18px;
+            padding: 18px 22px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            width: 100%;
+            outline: none;
+        }
+
+        .topic-card:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(0, 242, 254, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 242, 254, 0.15);
+        }
+
+        .topic-card-icon {
+            font-size: 26px;
+            background: rgba(79, 172, 254, 0.08);
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(79, 172, 254, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .topic-card:hover .topic-card-icon {
+            transform: scale(1.1);
+        }
+
+        .topic-card-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex-grow: 1;
+        }
+
+        .topic-card-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .topic-card-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .topic-card-arrow {
+            color: var(--text-muted);
+            transition: transform 0.3s ease;
+        }
+
+        .topic-card:hover .topic-card-arrow {
+            transform: translateX(4px);
+            color: #00f2fe;
+        }
+
+        /* Question style */
+        .question-box {
+            margin-bottom: 28px;
+        }
+
+        .question-en {
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .question-zh {
+            font-size: 15px;
+            color: var(--text-zh);
+            font-weight: 400;
+            line-height: 1.5;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 8px 14px;
+            border-left: 3px solid #4facfe;
+            border-radius: 4px;
+        }
+
+        /* Option list */
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 30px;
+        }
+
+        .option-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 18px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            outline: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .option-item:hover:not(.disabled) {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(79, 172, 254, 0.4);
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .option-prefix {
+            color: #4facfe;
+            margin-right: 14px;
+            font-weight: 800;
+        }
+
+        .option-text {
+            flex-grow: 1;
+            color: var(--text-main);
+        }
+
+        /* Option Feedback States */
+        .option-item.correct {
+            background: var(--success-bg) !important;
+            border-color: var(--success-border) !important;
+            color: var(--success-color) !important;
+        }
+
+        .option-item.correct .option-prefix {
+            color: var(--success-color);
+        }
+
+        .option-item.wrong {
+            background: var(--error-bg) !important;
+            border-color: var(--error-border) !important;
+            color: var(--error-color) !important;
+        }
+
+        .option-item.wrong .option-prefix {
+            color: var(--error-color);
+        }
+
+        .option-item.disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .option-item.fade-out {
+            opacity: 0.35;
+        }
+
+        /* Status Icon inside Option */
+        .status-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-left: 12px;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .option-item.correct .status-icon,
+        .option-item.wrong .status-icon {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .option-item.correct .status-icon {
+            background: var(--success-color);
+            color: #fff;
+        }
+
+        .option-item.wrong .status-icon {
+            background: var(--error-color);
+            color: #fff;
+        }
+
+        /* Explanation Box */
+        .explanation-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .explanation-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-glow);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .explanation-text {
+            font-size: 15px;
+            color: var(--text-zh);
+            line-height: 1.6;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Navigation Bar during Quiz */
+        .quiz-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 12px 16px;
+            font-size: 15px;
+            font-weight: 700;
+            border-radius: 12px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            border: none;
+            outline: none;
+        }
+
+        .nav-btn-primary {
+            background: var(--primary-grad);
+            color: #fff;
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+
+        .nav-btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(79, 172, 254, 0.5);
+        }
+
+        .nav-btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+        }
+
+        .nav-btn-secondary:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn-exit {
+            background: rgba(239, 68, 68, 0.05);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+            flex-grow: 0.8; /* Exit按鍵稍微窄一點 */
+        }
+
+        .nav-btn-exit:hover {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.4);
+            color: var(--error-color);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* General Buttons */
+        .btn {
+            background: var(--primary-grad);
+            border: none;
+            border-radius: 14px;
+            padding: 16px 32px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px var(--primary-glow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            outline: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 22px rgba(79, 172, 254, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: none;
+            transform: translateY(-2px);
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 16px;
+            flex-direction: column;
+        }
+
+        @media (min-width: 480px) {
+            .btn-container {
+                flex-direction: row;
+            }
+        }
+
+        /* Result Screen */
+        .result-score-circle {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(23, 28, 41, 0.9) 0%, rgba(11, 15, 25, 0.9) 100%);
+            border: 6px solid rgba(79, 172, 254, 0.2);
+            box-shadow: 0 0 30px var(--primary-glow);
+            margin: 0 auto 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .result-score {
+            font-size: 48px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1;
+        }
+
+        .result-total {
+            font-size: 16px;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .result-grade {
+            font-size: 22px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .result-feedback {
+            font-size: 15px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 35px;
+            line-height: 1.5;
+        }
+
+        /* Review Section in Results */
+        .review-section {
+            margin-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 30px;
+        }
+
+        .review-header {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .review-toggle-btn {
+            background: none;
+            border: none;
+            color: #4facfe;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .review-toggle-btn:hover {
+            text-decoration: underline;
+        }
+
+        .review-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-height: 350px;
+            overflow-y: auto;
+            padding-right: 8px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+        }
+
+        .review-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .review-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .review-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            padding: 16px;
+        }
+
+        .review-q-num {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--accent-pink);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .review-q-text {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .review-answers {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .review-ans-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            border-radius: 6px;
+        }
+
+        .review-ans-row.wrong-ans {
+            background: rgba(239, 68, 68, 0.08);
+            color: var(--error-color);
+            font-weight: 600;
+        }
+
+        .review-ans-row.correct-ans {
+            background: rgba(16, 185, 129, 0.08);
+            color: var(--success-color);
+            font-weight: 600;
+        }
+
+        .review-ans-row.unanswered-ans {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .review-exp {
+            font-size: 13px;
+            color: var(--text-muted);
+            border-top: 1px dashed rgba(255, 255, 255, 0.05);
+            padding-top: 8px;
+            line-height: 1.5;
+        }
+
+        /* SVG icons styling */
+        .icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            stroke-width: 2;
+            stroke: currentColor;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .card {
+                padding: 24px;
+                border-radius: 16px;
+            }
+
+            .quiz-title {
+                font-size: 22px;
+            }
+
+            .question-en {
+                font-size: 18px;
+            }
+
+            .option-item {
+                padding: 14px 18px;
+                font-size: 15px;
+            }
+
+            .quiz-nav {
+                gap: 8px;
+            }
+
+            .nav-btn span {
+                display: none; /* 手機版隱藏文字，只顯示箭頭/圖示，保持寬度適配 */
+            }
+
+            .nav-btn-exit span {
+                display: inline; /* Exit依然顯示 */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        
+        <!-- INTRO SCREEN -->
+        <div id="intro-screen" class="screen active">
+            <div class="intro-illustration">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+            </div>
+            <h1 class="intro-title">Super Fun 7</h1>
+            <p class="intro-desc">英文閱讀能力互動挑戰！請選擇您想要練習的主題：</p>
+            
+            <div style="display: flex; justify-content: center; margin-bottom: 25px;">
+                <a href="../index.html" class="btn btn-secondary" style="width: auto; padding: 10px 20px; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                    🏠 返回傳送門
+                </a>
+            </div>
+            
+            <!-- Topic Selector Cards -->
+            <div class="topic-selector">
+                <button class="topic-card" onclick="selectTopic('topic1')">
+                    <div class="topic-card-icon">📖</div>
+                    <div class="topic-card-info">
+                        <div class="topic-card-title">Topic 1: Family Sharing Day</div>
+                        <div class="topic-card-desc">共 15 題 • 故事分享日與越南春捲製作</div>
+                    </div>
+                    <div class="topic-card-arrow">
+                        <svg class="icon" style="width:18px; height:18px;" viewBox="0 0 24 24">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                </button>
+                
+                <button class="topic-card" onclick="selectTopic('topic2')">
+                    <div class="topic-card-icon">🚜</div>
+                    <div class="topic-card-info">
+                        <div class="topic-card-title">Topic 2: Working at the Farm</div>
+                        <div class="topic-card-desc">共 13 題 • 農場工作與健康早餐選擇</div>
+                    </div>
+                    <div class="topic-card-arrow">
+                        <svg class="icon" style="width:18px; height:18px;" viewBox="0 0 24 24">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- QUIZ SCREEN -->
+        <div id="quiz-screen" class="screen">
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="progress-bar-wrapper">
+                    <div id="progress-bar" class="progress-bar"></div>
+                </div>
+                <div id="progress-text" class="progress-text">Q 1 / 15</div>
+            </div>
+
+            <!-- Quiz Header Info -->
+            <div class="quiz-header">
+                <div id="quiz-subtitle" class="quiz-subtitle">Topic 1 - Story Time</div>
+            </div>
+
+            <!-- Question Box -->
+            <div class="question-box">
+                <div id="question-en" class="question-en">Question text in English?</div>
+                <div id="question-zh" class="question-zh">題目中文翻譯</div>
+            </div>
+
+            <!-- Options Box -->
+            <div id="options-list" class="options-list">
+                <!-- Option buttons will be dynamically rendered here -->
+            </div>
+
+            <!-- Explanation Box (Initially hidden) -->
+            <div id="explanation-box" class="explanation-box">
+                <div class="explanation-title">
+                    <svg class="icon" style="width:16px; height:16px;" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <span>答案解析 Explanation</span>
+                </div>
+                <div id="explanation-text" class="explanation-text">解析內容說明</div>
+            </div>
+
+            <!-- Quiz Navigation Bar -->
+            <div class="quiz-nav">
+                <button id="prev-btn" class="nav-btn nav-btn-secondary">
+                    <svg class="icon" style="width:16px; height:16px;" viewBox="0 0 24 24">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                    <span>前一題</span>
+                </button>
+                
+                <button id="exit-btn" class="nav-btn nav-btn-secondary nav-btn-exit">
+                    <svg class="icon" style="width:16px; height:16px;" viewBox="0 0 24 24">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    <span>Exit</span>
+                </button>
+                
+                <button id="next-btn" class="nav-btn nav-btn-primary">
+                    <span id="next-btn-text">後一題</span>
+                    <svg class="icon" style="width:16px; height:16px;" viewBox="0 0 24 24">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- RESULT SCREEN -->
+        <div id="result-screen" class="screen">
+            <div class="result-score-circle">
+                <div id="result-score" class="result-score">0</div>
+                <div id="result-total-label" class="result-total">/ 15 題答對</div>
+            </div>
+            
+            <h2 id="result-grade" class="result-grade">Excellent!</h2>
+            <p id="result-feedback" class="result-feedback">這是很棒的成績！你已經完全掌握了主題的對話細節。</p>
+
+            <div class="btn-container">
+                <button id="restart-btn" class="btn">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+                    </svg>
+                    <span>重新挑戰</span>
+                </button>
+                <button id="home-btn" class="btn btn-secondary">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    <span>主題大廳</span>
+                </button>
+            </div>
+
+            <!-- Review / Incorrect Answers Review Section -->
+            <div id="review-section" class="review-section" style="display: none;">
+                <div class="review-header">
+                    <span>答錯與未答題目回顧 Review</span>
+                    <button id="review-toggle-btn" class="review-toggle-btn">
+                        <span>展開全部</span>
+                        <svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                </div>
+                <div id="review-list" class="review-list">
+                    <!-- Wrong answers list will be rendered here -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Quiz Database containing both topics
+    const quizDatabase = {
+        topic1: {
+            title: "Topic 1 - Story Time: Family Sharing Day",
+            questions: [
+                {
+                    id: 1,
+                    questionEn: "When is the Family Sharing Day?",
+                    questionZh: "家庭分享日是在什麼時候？",
+                    options: ["Next Monday", "Next Friday", "This Friday", "Next weekend"],
+                    answer: 1,
+                    explanation: "故事開頭提到 \"Next Friday is our Family Sharing Day.\"（下週五是我們的家庭分享日）。"
+                },
+                {
+                    id: 2,
+                    questionEn: "Where is Wendy’s mom from?",
+                    questionZh: "Wendy 的媽媽來自哪裡？",
+                    options: ["Taiwan", "The UK", "Vietnam", "Japan"],
+                    answer: 2,
+                    explanation: "Wendy的媽媽自我介紹說 \"Hi, I’m Wendy’s mom. I’m from Vietnam.\"（我來自越南）。"
+                },
+                {
+                    id: 3,
+                    questionEn: "What is the weather like in Vietnam according to Wendy’s mom?",
+                    questionZh: "根據 Wendy 的媽媽，越南的天氣如何？",
+                    options: ["Cold and rainy", "Sunny and hot", "Cloudy and windy", "Snowy and cold"],
+                    answer: 1,
+                    explanation: "對話中提到越南的天氣 \"The weather is sunny and hot...\"（那裡的天氣晴朗炎熱）。"
+                },
+                {
+                    id: 4,
+                    questionEn: "Which place has weather just like Vietnam's?",
+                    questionZh: "哪一個地方的天氣和越南一樣？",
+                    options: ["The UK", "Japan", "Taiwan", "The USA"],
+                    answer: 2,
+                    explanation: "對話中提到越南的天氣晴朗炎熱，\"just like Taiwan\"（就像台灣一樣）。"
+                },
+                {
+                    id: 5,
+                    questionEn: "Where is Ken from?",
+                    questionZh: "Ken 來自哪裡？",
+                    options: ["The UK", "Vietnam", "Japan", "The USA"],
+                    answer: 2,
+                    explanation: "Ken 自我介紹說 \"My name is Ken. I’m from Japan.\"（我的名字叫做Ken。我來自日本）。"
+                },
+                {
+                    id: 6,
+                    questionEn: "Is Emma from the UK, too?",
+                    questionZh: "Emma 也來自英國嗎？",
+                    options: ["Yes, she is from the UK.", "No, she is from Japan.", "No, she is from the USA.", "Yes, she is Wendy's sister."],
+                    answer: 2,
+                    explanation: "當被問到 Emma 是否也來自英國，回答是 \"No, she isn’t. Emma is from the USA.\"（不，她不是。Emma來自美國）。"
+                },
+                {
+                    id: 7,
+                    questionEn: "What food are they going to make today?",
+                    questionZh: "他們今天要做什麼食物？",
+                    options: ["Sandwiches", "Spring rolls", "Mooncakes", "Cake"],
+                    answer: 1,
+                    explanation: "Wendy的媽媽說 \"Today, we're going to make spring rolls.\"（今天我們要做春捲）。"
+                },
+                {
+                    id: 8,
+                    questionEn: "What is the first step in making spring rolls?",
+                    questionZh: "製作春捲的第一個步驟是什麼？",
+                    options: ["Wrap anything you like in the roll.", "Eat the rice paper.", "Watch TV.", "Spray some water on the rice paper."],
+                    answer: 3,
+                    explanation: "製作春捲的步驟中提到 \"First, spray some water on the rice paper.\"（首先，灑點水在米紙上）。"
+                },
+                {
+                    id: 9,
+                    questionEn: "Where should you spray water when making spring rolls?",
+                    questionZh: "做春捲時應該把水灑在哪裡？",
+                    options: ["On the rice paper", "On the plate", "On the table", "On the vegetables"],
+                    answer: 0,
+                    explanation: "如上題，水是灑在 rice paper（米紙）上。"
+                },
+                {
+                    id: 10,
+                    questionEn: "What can people wrap in the spring roll?",
+                    questionZh: "人們可以在春捲裡包什麼？",
+                    options: ["Only vegetables", "Anything they like", "Only meat", "Nothing"],
+                    answer: 1,
+                    explanation: "對話中提到 \"Then, wrap anything you like in the roll.\"（然後，把你喜歡的任何東西都包進去）。"
+                },
+                {
+                    id: 11,
+                    questionEn: "Does Ken like to cook?",
+                    questionZh: "Ken 喜歡煮東西嗎？",
+                    options: ["No, he doesn't.", "Yes, he does.", "He only likes to eat.", "The story doesn't say."],
+                    answer: 1,
+                    explanation: "當被問到 \"Do you like to cook?\" 時，Ken 回答 \"Yes, I do.\"（是的，我喜歡）。"
+                },
+                {
+                    id: 12,
+                    questionEn: "What does Ken like to do in his free time besides cooking?",
+                    questionZh: "除了煮菜，Ken 在空閒時間還喜歡做什麼？",
+                    options: ["Go camping", "Go shopping", "Watch TV", "Dance"],
+                    answer: 2,
+                    explanation: "Ken 說 \"I also like to watch TV in my free time.\"（我有空時還喜歡看電視）。"
+                },
+                {
+                    id: 13,
+                    questionEn: "What does Wendy like to do in her free time?",
+                    questionZh: "Wendy 在空閒時間喜歡做什麼？",
+                    options: ["Watch TV at home", "Go camping with her family", "Go shopping with Wendy's mom", "Make spring rolls with Emma"],
+                    answer: 1,
+                    explanation: "Wendy 被問到空閒時間做什麼，她回答 \"I like to go camping with my family.\"（我喜歡和家人去露營）。"
+                },
+                {
+                    id: 14,
+                    questionEn: "What does Wendy’s mom like to do?",
+                    questionZh: "Wendy 的媽媽喜歡做什麼？",
+                    options: ["Cook and watch TV", "Go camping and hiking", "Dance and go shopping", "Teach English"],
+                    answer: 2,
+                    explanation: "當問到 Wendy 媽媽的喜好，Wendy 回答 \"She likes to dance and go shopping.\"（她喜歡跳舞和逛街購物）。"
+                },
+                {
+                    id: 15,
+                    questionEn: "What do they say when showing their spring rolls for a photo?",
+                    questionZh: "他們在展示春捲拍照時會說什麼？",
+                    options: ["\"Good job, Ken!\"", "\"Say cheese!\"", "\"Vietnam is right here.\"", "\"Sure! Anytime.\""],
+                    answer: 1,
+                    explanation: "對話中提到 \"Say cheese and show me your spring rolls.\"（說「起司」然後把春捲拿起來給我看），這是拍照時的常用語。"
+                }
+            ]
+        },
+        topic2: {
+            title: "Topic 2 - Story Time: Working at the Farm",
+            questions: [
+                {
+                    id: 1,
+                    questionEn: "Why is Mike feeling hungry?",
+                    questionZh: "為什麼 Mike 覺得餓？",
+                    options: ["He didn't like his food.", "He had no time for breakfast.", "He worked too hard.", "He was late for lunch."],
+                    answer: 1,
+                    explanation: "對話中 Mike 提到 \"Sorry, I'm just hungry. I have no time for breakfast.\"（抱歉，我只是肚子餓了。我沒時間吃早餐）。"
+                },
+                {
+                    id: 2,
+                    questionEn: "Where is everyone working?",
+                    questionZh: "大家都在哪裡工作？",
+                    options: ["At the school", "At the farm", "At the supermarket", "At home"],
+                    answer: 1,
+                    explanation: "對話開頭提到 \"Everyone is already working at the farm.\"（大家都已經在農場工作了）。"
+                },
+                {
+                    id: 3,
+                    questionEn: "What did Mike want to have for breakfast at first?",
+                    questionZh: "Mike 起初早餐想吃什麼？",
+                    options: ["Bread and eggs", "Fruits and milk", "Cake and juice", "Strawberries and watermelon"],
+                    answer: 2,
+                    explanation: "當問到早餐想吃什麼時，Mike 回答 \"I would like some cake and juice.\"（我想吃蛋糕和果汁）。"
+                },
+                {
+                    id: 4,
+                    questionEn: "Why is cake and juice not a good choice for breakfast?",
+                    questionZh: "為什麼蛋糕和果汁不是早餐的好選擇？",
+                    options: ["They are too expensive.", "There is too much sugar.", "They don't taste good.", "They are not fresh."],
+                    answer: 1,
+                    explanation: "另一人對 Mike 說 \"There’s too much sugar in your breakfast.\"（你的早餐有太多糖了）。"
+                },
+                {
+                    id: 5,
+                    questionEn: "Which of the following is recommended as a healthy breakfast?",
+                    questionZh: "以下哪一項是被推薦的健康早餐？",
+                    options: ["Cake and juice", "Ice cream and soda", "Bread, eggs, and fruits", "Sandwiches and hamburgers"],
+                    answer: 2,
+                    explanation: "對話中建議 \"Would you like some bread, eggs, and fruits for breakfast? It looks healthy.\"（你想吃麵包、雞蛋和水果當早餐嗎？這看起來很健康）。"
+                },
+                {
+                    id: 6,
+                    questionEn: "How much are the strawberries?",
+                    questionZh: "草莓多少錢？",
+                    options: ["80 dollars", "120 dollars", "200 dollars", "50 dollars"],
+                    answer: 1,
+                    explanation: "當問到草莓價格時，Alan 回答 \"They're 120 dollars.\"（它們是120元）。"
+                },
+                {
+                    id: 7,
+                    questionEn: "What food does Mom want to make with eggs?",
+                    questionZh: "媽媽想用雞蛋做什麼食物？",
+                    options: ["Sandwiches", "Cake", "Juice", "Soup"],
+                    answer: 0,
+                    explanation: "媽媽提到 \"I need some eggs for making sandwiches.\"（我做三明治需要一些蛋）。"
+                },
+                {
+                    id: 8,
+                    questionEn: "How many eggs does Mom need?",
+                    questionZh: "媽媽需要幾顆雞蛋？",
+                    options: ["12 eggs", "20 eggs", "15 eggs", "8 eggs"],
+                    answer: 1,
+                    explanation: "媽媽回答說 \"I need 20 eggs.\"（我需要20顆蛋）。"
+                },
+                {
+                    id: 9,
+                    questionEn: "How much do the 20 eggs cost?",
+                    questionZh: "20顆雞蛋要多少錢？",
+                    options: ["120 dollars", "80 dollars", "200 dollars", "50 dollars"],
+                    answer: 2,
+                    explanation: "詢問蛋的價格後，Alan 說 \"They're 200 dollars.\"（它們是200元）。"
+                },
+                {
+                    id: 10,
+                    questionEn: "How much is the watermelon?",
+                    questionZh: "西瓜多少錢？",
+                    options: ["50 dollars", "80 dollars", "120 dollars", "200 dollars"],
+                    answer: 1,
+                    explanation: "Alan 回答西瓜的價格 \"It's 80 dollars.\"（它是80元）。"
+                },
+                {
+                    id: 11,
+                    questionEn: "Why is the watermelon 80 dollars?",
+                    questionZh: "為什麼西瓜是 80 元？",
+                    options: ["It is very small.", "It is not fresh.", "It is on sale.", "It is imported from another country."],
+                    answer: 2,
+                    explanation: "Alan 指出 \"It's 80 dollars. It's on sale.\"（它是80元。它正在特價）。"
+                },
+                {
+                    id: 12,
+                    questionEn: "Which foods are healthy and can be eaten more according to the conversation?",
+                    questionZh: "根據對話，哪些食物很健康，可以多吃？",
+                    options: ["Red zone foods", "High-sugar foods", "Green zone foods", "Cake and sweets"],
+                    answer: 2,
+                    explanation: "對話中提到 \"Green zone foods are healthy. We can eat more.\"（綠燈區的食物很健康。我們可以多吃）。"
+                },
+                {
+                    id: 13,
+                    questionEn: "How much is the juice that someone wants to buy?",
+                    questionZh: "有人想要買的果汁多少錢？",
+                    options: ["50 dollars", "80 dollars", "120 dollars", "200 dollars"],
+                    answer: 0,
+                    explanation: "對話末尾問 \"I would like some juice. How much is it?\"，回答是 \"It’s 50 dollars.\"（它是50元）。"
+                }
+            ]
+        }
+    };
+
+    // State Variables
+    let activeQuizKey = 'topic1';
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let selectedAnswer = null;
+    let isAnswered = false;
+    let userAnswers = []; // Array to track answers for each question: null or answerObject
+
+    // DOM Elements
+    const introScreen = document.getElementById('intro-screen');
+    const quizScreen = document.getElementById('quiz-screen');
+    const resultScreen = document.getElementById('result-screen');
+    
+    const prevBtn = document.getElementById('prev-btn');
+    const exitBtn = document.getElementById('exit-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const nextBtnText = document.getElementById('next-btn-text');
+    const restartBtn = document.getElementById('restart-btn');
+    const homeBtn = document.getElementById('home-btn');
+    
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+    const quizSubtitle = document.getElementById('quiz-subtitle');
+    const questionEn = document.getElementById('question-en');
+    const questionZh = document.getElementById('question-zh');
+    const optionsList = document.getElementById('options-list');
+    
+    const explanationBox = document.getElementById('explanation-box');
+    const explanationText = document.getElementById('explanation-text');
+    
+    const resultScore = document.getElementById('result-score');
+    const resultTotalLabel = document.getElementById('result-total-label');
+    const resultGrade = document.getElementById('result-grade');
+    const resultFeedback = document.getElementById('result-feedback');
+    const reviewSection = document.getElementById('review-section');
+    const reviewList = document.getElementById('review-list');
+    const reviewToggleBtn = document.getElementById('review-toggle-btn');
+
+    // Event Listeners
+    prevBtn.addEventListener('click', handlePrev);
+    exitBtn.addEventListener('click', handleExit);
+    nextBtn.addEventListener('click', handleNext);
+    restartBtn.addEventListener('click', restartQuiz);
+    homeBtn.addEventListener('click', goHome);
+    
+    let reviewCollapsed = true;
+    reviewToggleBtn.addEventListener('click', () => {
+        reviewCollapsed = !reviewCollapsed;
+        if (reviewCollapsed) {
+            reviewList.style.display = 'none';
+            reviewToggleBtn.querySelector('span').innerText = '展開全部';
+            reviewToggleBtn.querySelector('svg').style.transform = 'rotate(0deg)';
+        } else {
+            reviewList.style.display = 'flex';
+            reviewToggleBtn.querySelector('span').innerText = '收合內容';
+            reviewToggleBtn.querySelector('svg').style.transform = 'rotate(180deg)';
+        }
+    });
+
+    // Functions
+    function showScreen(screen) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        screen.classList.add('active');
+    }
+
+    function selectTopic(topicKey) {
+        activeQuizKey = topicKey;
+        startQuiz();
+    }
+
+    function goHome() {
+        showScreen(introScreen);
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        const quizData = quizDatabase[activeQuizKey];
+        // Initialize userAnswers array with nulls matching total questions
+        userAnswers = Array(quizData.questions.length).fill(null);
+        showScreen(quizScreen);
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        const quizData = quizDatabase[activeQuizKey];
+        const currentQuestion = quizData.questions[currentQuestionIndex];
+        const prevAnswer = userAnswers[currentQuestionIndex];
+        
+        // Update Title/Subtitle
+        quizSubtitle.innerText = quizData.title;
+        
+        // Update Progress Bar
+        const progressPercentage = ((currentQuestionIndex + 1) / quizData.questions.length) * 100;
+        progressBar.style.width = `${progressPercentage}%`;
+        progressText.innerText = `Q ${currentQuestionIndex + 1} / ${quizData.questions.length}`;
+        
+        // Load Question texts
+        questionEn.innerText = currentQuestion.questionEn;
+        questionZh.innerText = currentQuestion.questionZh;
+        
+        // Render Options
+        optionsList.innerHTML = '';
+        currentQuestion.options.forEach((option, index) => {
+            const button = document.createElement('button');
+            button.className = 'option-item';
+            button.setAttribute('tabindex', '0');
+            
+            const prefix = String.fromCharCode(65 + index); // A, B, C, D
+            
+            button.innerHTML = `
+                <span class="option-prefix">${prefix}</span>
+                <span class="option-text">${option}</span>
+                <div class="status-icon"></div>
+            `;
+            
+            button.addEventListener('click', () => selectOption(index));
+            optionsList.appendChild(button);
+        });
+
+        // Set Nav buttons states
+        // Prev button state
+        prevBtn.disabled = (currentQuestionIndex === 0);
+        
+        // Next button text
+        if (currentQuestionIndex === quizData.questions.length - 1) {
+            nextBtnText.innerText = "查看結果";
+        } else {
+            nextBtnText.innerText = "後一題";
+        }
+
+        // Restore state if already answered
+        if (prevAnswer !== null) {
+            isAnswered = true;
+            selectedAnswer = prevAnswer.chosenAnswer;
+            
+            const optionButtons = optionsList.querySelectorAll('.option-item');
+            optionButtons.forEach((btn, i) => {
+                btn.classList.add('disabled');
+                const statusIcon = btn.querySelector('.status-icon');
+                
+                if (i === currentQuestion.answer) {
+                    btn.classList.add('correct');
+                    statusIcon.innerHTML = `
+                        <svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    `;
+                } else if (i === prevAnswer.chosenAnswer) {
+                    btn.classList.add('wrong');
+                    statusIcon.innerHTML = `
+                        <svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    `;
+                } else {
+                    btn.classList.add('fade-out');
+                }
+            });
+            
+            // Show Explanation
+            explanationText.innerText = currentQuestion.explanation;
+            explanationBox.style.display = 'block';
+        } else {
+            isAnswered = false;
+            selectedAnswer = null;
+            explanationBox.style.display = 'none';
+        }
+    }
+
+    function selectOption(index) {
+        if (isAnswered) return;
+        isAnswered = true;
+        selectedAnswer = index;
+        
+        const quizData = quizDatabase[activeQuizKey];
+        const currentQuestion = quizData.questions[currentQuestionIndex];
+        const isCorrect = (index === currentQuestion.answer);
+        
+        // Record User Answer for current question index
+        userAnswers[currentQuestionIndex] = {
+            questionId: currentQuestion.id,
+            questionEn: currentQuestion.questionEn,
+            options: currentQuestion.options,
+            correctAnswer: currentQuestion.answer,
+            chosenAnswer: index,
+            isCorrect: isCorrect,
+            explanation: currentQuestion.explanation
+        };
+        
+        // Update UI option buttons styling
+        const optionButtons = optionsList.querySelectorAll('.option-item');
+        optionButtons.forEach((btn, i) => {
+            btn.classList.add('disabled');
+            
+            const statusIcon = btn.querySelector('.status-icon');
+            
+            if (i === currentQuestion.answer) {
+                btn.classList.add('correct');
+                statusIcon.innerHTML = `
+                    <svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                `;
+            } else if (i === index) {
+                btn.classList.add('wrong');
+                statusIcon.innerHTML = `
+                    <svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                `;
+            } else {
+                btn.classList.add('fade-out');
+            }
+        });
+        
+        // Show Explanation
+        explanationText.innerText = currentQuestion.explanation;
+        explanationBox.style.display = 'block';
+        
+        // Smooth scroll to explanation/nav bar in mobile
+        setTimeout(() => {
+            explanationBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+    }
+
+    function handlePrev() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            loadQuestion();
+        }
+    }
+
+    function handleNext() {
+        const quizData = quizDatabase[activeQuizKey];
+        if (currentQuestionIndex < quizData.questions.length - 1) {
+            currentQuestionIndex++;
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function handleExit() {
+        if (confirm("確定要退出測驗並返回主選單嗎？目前的答題進度將會遺失。")) {
+            goHome();
+        }
+    }
+
+    function showResults() {
+        showScreen(resultScreen);
+        
+        const quizData = quizDatabase[activeQuizKey];
+        const totalQs = quizData.questions.length;
+        
+        // Compute score by filtering correct answers
+        // (Note: unanswered questions in userAnswers will be null, we must fill them out or handle them)
+        let correctCount = 0;
+        
+        // Fill uncompleted answers and calculate score
+        for (let i = 0; i < totalQs; i++) {
+            if (userAnswers[i] === null) {
+                const q = quizData.questions[i];
+                userAnswers[i] = {
+                    questionId: q.id,
+                    questionEn: q.questionEn,
+                    options: q.options,
+                    correctAnswer: q.answer,
+                    chosenAnswer: null, // Did not answer
+                    isCorrect: false,
+                    explanation: q.explanation
+                };
+            } else if (userAnswers[i].isCorrect) {
+                correctCount++;
+            }
+        }
+        
+        score = correctCount;
+        resultScore.innerText = score;
+        resultTotalLabel.innerText = `/ ${totalQs} 題答對`;
+        
+        // Set Grade and Feedback based on score
+        const scorePercentage = (score / totalQs) * 100;
+        
+        if (scorePercentage === 100) {
+            resultGrade.innerText = "Perfect! 完美滿分! 💯";
+            resultGrade.style.color = "var(--success-color)";
+            resultFeedback.innerText = "太厲害了！你對本單元的對話細節與句型掌握無懈可擊！";
+        } else if (scorePercentage >= 80) {
+            resultGrade.innerText = "Excellent! 表現優秀! 🌟";
+            resultGrade.style.color = "#60a5fa";
+            resultFeedback.innerText = "非常棒！你對本課的掌握度很高，大部分的細節都答對了。";
+        } else if (scorePercentage >= 60) {
+            resultGrade.innerText = "Good Job! 順利及格! 👍";
+            resultGrade.style.color = "#fbbf24";
+            resultFeedback.innerText = "做得很不錯！你已經掌握了基本的對話，可以參考下方的答錯與未答整理來複習。";
+        } else {
+            resultGrade.innerText = "Keep It Up! 再接再厲! 💪";
+            resultGrade.style.color = "var(--accent-pink)";
+            resultFeedback.innerText = "加油！建議重新閱讀故事對話，並用下方的回顧功能來加強學習喔！";
+        }
+        
+        // Render Review Section (Show wrong/unanswered answers)
+        const wrongAnswers = userAnswers.filter(a => !a.isCorrect);
+        
+        if (wrongAnswers.length > 0) {
+            reviewSection.style.display = 'block';
+            reviewList.innerHTML = '';
+            
+            // Set collapsed state initially
+            reviewCollapsed = true;
+            reviewList.style.display = 'none';
+            reviewToggleBtn.querySelector('span').innerText = '展開全部';
+            reviewToggleBtn.querySelector('svg').style.transform = 'rotate(0deg)';
+            
+            wrongAnswers.forEach(ans => {
+                const item = document.createElement('div');
+                item.className = 'review-item';
+                
+                const qPrefix = String.fromCharCode(65 + ans.correctAnswer);
+                
+                let answerSnippet = '';
+                
+                if (ans.chosenAnswer === null) {
+                    // Unanswered
+                    answerSnippet = `
+                        <div class="review-ans-row unanswered-ans">
+                            <svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <span>你的回答 Your Answer: 未作答 (Unanswered)</span>
+                        </div>
+                    `;
+                } else {
+                    const chosenPrefix = String.fromCharCode(65 + ans.chosenAnswer);
+                    answerSnippet = `
+                        <div class="review-ans-row wrong-ans">
+                            <svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                            <span>你的回答 Your Answer: ${chosenPrefix}) ${ans.options[ans.chosenAnswer]}</span>
+                        </div>
+                    `;
+                }
+                
+                item.innerHTML = `
+                    <div class="review-q-num">Question ${ans.questionId}</div>
+                    <div class="review-q-text">${ans.questionEn}</div>
+                    <div class="review-answers">
+                        ${answerSnippet}
+                        <div class="review-ans-row correct-ans">
+                            <svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span>正確答案 Correct Answer: ${qPrefix}) ${ans.options[ans.correctAnswer]}</span>
+                        </div>
+                    </div>
+                    <div class="review-exp">
+                        <strong>解析:</strong> ${ans.explanation}
+                    </div>
+                `;
+                reviewList.appendChild(item);
+            });
+        } else {
+            reviewSection.style.display = 'none';
+        }
+    }
+
+    function restartQuiz() {
+        startQuiz();
+    }
+</script>
+</body>
+</html>

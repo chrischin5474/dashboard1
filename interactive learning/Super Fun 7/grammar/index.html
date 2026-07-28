@@ -1,0 +1,2460 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super Fun 7 互動式文法教學簡報</title>
+  <!-- 載入可愛的 Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Noto+Sans+TC:wght@100..900&display=swap" rel="stylesheet">
+  
+  <style>
+    /* === 全域變數與可愛 Neobrutalism 風格 === */
+    :root {
+      --bg-color: #FAF6EE;
+      --text-color: #2D2D2D;
+      --border-color: #2D2D2D;
+      --border-width: 3px;
+      
+      /* 馬卡龍主題色 */
+      --color-primary: #FFB5B5; /* 可愛粉紅 */
+      --color-success: #A8E6CF; /* 可愛粉綠 */
+      --color-warning: #FFD3B6; /* 可愛粉橘 */
+      --color-info: #BDE0FE;    /* 可愛粉藍 */
+      --color-purple: #C7CEEA;  /* 可愛粉紫 */
+      --color-yellow: #FDFFB6;  /* 可愛柔黃 */
+      --color-white: #FFFFFF;
+      
+      --shadow-offset: 6px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Fredoka', 'Noto Sans TC', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      padding-bottom: 20px;
+    }
+
+    /* === 可愛卡通背景裝飾 === */
+    .bg-decor {
+      position: fixed;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0.6;
+    }
+    
+    .decor-star {
+      width: 40px;
+      height: 40px;
+      fill: var(--color-yellow);
+    }
+
+    /* === 頂部導覽列 === */
+    header {
+      background-color: var(--color-white);
+      border-bottom: var(--border-width) solid var(--border-color);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-color);
+      text-decoration: none;
+    }
+    
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      background-color: var(--color-primary);
+      border: 2px solid var(--border-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 2px 2px 0px var(--border-color);
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 15px;
+    }
+
+    /* === 核心按鈕卡通樣式 === */
+    .btn {
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 16px;
+      padding: 10px 20px;
+      background-color: var(--color-white);
+      border: var(--border-width) solid var(--border-color);
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 3px 3px 0px var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+
+    .btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0px var(--border-color);
+    }
+
+    .btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px var(--border-color);
+    }
+
+    .btn-primary { background-color: var(--color-primary); }
+    .btn-success { background-color: var(--color-success); }
+    .btn-info { background-color: var(--color-info); }
+    .btn-warning { background-color: var(--color-warning); }
+    .btn-purple { background-color: var(--color-purple); }
+
+    /* === 主容器 === */
+    main {
+      flex: 1;
+      max-width: 1000px;
+      width: 90%;
+      margin: 30px auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* === 首頁：課程選單 === */
+    #home-screen {
+      display: block;
+    }
+
+    .welcome-banner {
+      background-color: var(--color-warning);
+      border: var(--border-width) solid var(--border-color);
+      border-radius: 24px;
+      padding: 40px 30px;
+      text-align: center;
+      box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--border-color);
+      margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .welcome-banner h1 {
+      font-size: 36px;
+      margin-bottom: 12px;
+      font-weight: 800;
+    }
+
+    .welcome-banner p {
+      font-size: 18px;
+      color: #555;
+    }
+
+    .lesson-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 25px;
+    }
+
+    .lesson-card {
+      background-color: var(--color-white);
+      border: var(--border-width) solid var(--border-color);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--border-color);
+      transition: all 0.2s ease;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .lesson-card:hover {
+      transform: translate(-4px, -4px);
+      box-shadow: 10px 10px 0px var(--border-color);
+    }
+
+    .lesson-card-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid var(--border-color);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 3px 3px 0px var(--border-color);
+    }
+
+    .lesson-card h2 {
+      font-size: 22px;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .lesson-card p {
+      font-size: 14px;
+      color: #666;
+      font-weight: 500;
+    }
+
+    /* === 簡報主畫面 === */
+    #presentation-screen {
+      display: none;
+    }
+
+    .screen-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .lesson-title-area h2 {
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .lesson-title-area span {
+      font-size: 14px;
+      background-color: var(--color-yellow);
+      border: 2px solid var(--border-color);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+      margin-left: 10px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    /* 投影片容器 */
+    .slide-container {
+      background-color: var(--color-white);
+      border: var(--border-width) solid var(--border-color);
+      border-radius: 24px;
+      min-height: 520px;
+      box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--border-color);
+      padding: 30px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .slide {
+      width: 100%;
+      height: 100%;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .slide.active {
+      display: flex;
+    }
+
+    /* === Slide 1: 課堂封面 === */
+    .cover-slide h1 {
+      font-size: 42px;
+      font-weight: 900;
+      margin-bottom: 15px;
+      text-align: center;
+      color: var(--text-color);
+    }
+    
+    .cover-slide h3 {
+      font-size: 20px;
+      color: #666;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .cover-slide-illustration {
+      font-size: 70px;
+      margin-bottom: 20px;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* === Slide 2: 句型代換單字參考庫 === */
+    .vocabulary-slide {
+      width: 100%;
+    }
+
+    .vocabulary-layout {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      gap: 20px;
+    }
+
+    /* 3D 翻轉閃卡 */
+    .flashcard-wrapper {
+      perspective: 1000px;
+      width: 380px;
+      height: 250px;
+      max-width: 100%;
+      cursor: pointer;
+    }
+
+    .flashcard {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      border: var(--border-width) solid var(--border-color);
+      border-radius: 20px;
+      box-shadow: 5px 5px 0px var(--border-color);
+    }
+
+    .flashcard.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 17px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .card-front {
+      background-color: var(--color-warning);
+    }
+
+    .card-back {
+      background-color: var(--color-info);
+      transform: rotateY(180deg);
+    }
+
+    .card-front h2 {
+      font-size: 36px;
+      font-weight: 800;
+      margin-bottom: 5px;
+    }
+
+    .card-front .ipa {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 15px;
+      font-style: italic;
+    }
+
+    .card-back h2 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 15px;
+    }
+
+    .card-example {
+      font-size: 16px;
+      background-color: rgba(255, 255, 255, 0.7);
+      border: 2px solid var(--border-color);
+      padding: 8px 15px;
+      border-radius: 10px;
+      max-width: 90%;
+      line-height: 1.4;
+    }
+
+    .card-tip {
+      position: absolute;
+      bottom: 10px;
+      font-size: 12px;
+      color: rgba(0,0,0,0.4);
+      font-weight: 700;
+    }
+
+    .flashcard-nav {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-top: 10px;
+    }
+
+    .card-index {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    /* === Slide 3: 互動式句子文法教學 (精華重頭戲) === */
+    .grammar-slide {
+      width: 100%;
+    }
+
+    .grammar-container {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      gap: 20px;
+    }
+
+    /* 頂部引導說明 */
+    .grammar-guide-bar {
+      background-color: var(--color-purple);
+      border: var(--border-width) solid var(--border-color);
+      border-radius: 15px;
+      padding: 10px 20px;
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 3px 3px 0px var(--border-color);
+    }
+
+    /* 句子結構動態展示區 */
+    .sentence-visualizer-card {
+      background-color: var(--color-white);
+      border: var(--border-width) solid var(--border-color);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      position: relative;
+    }
+
+    .sentence-build-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      align-items: center;
+      min-height: 70px;
+    }
+
+    /* 句子中的各別單字文法積木 */
+    .grammar-token-brick {
+      padding: 10px 18px;
+      font-size: 24px;
+      font-weight: 800;
+      border: var(--border-width) solid var(--border-color);
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 2px 2px 0px var(--border-color);
+      transition: all 0.15s ease;
+      user-select: none;
+      position: relative;
+    }
+
+    .grammar-token-brick:hover {
+      transform: translateY(-3px);
+      box-shadow: 4px 4px 0px var(--border-color);
+    }
+    
+    .grammar-token-brick.active {
+      transform: translateY(1px);
+      box-shadow: 1px 1px 0px var(--border-color);
+      background-color: var(--color-yellow) !important;
+    }
+
+    /* 每個文法積木底下的顏色分類 */
+    .token-subject { background-color: var(--color-info); }       /* 主詞: 藍 */
+    .token-verb { background-color: var(--color-primary); }       /* 動詞: 紅 */
+    .token-helper { background-color: var(--color-purple); }     /* 助動詞: 紫 */
+    .token-adverb { background-color: var(--color-yellow); }     /* 副詞/介系詞: 黃 */
+    .token-object { background-color: var(--color-success); }     /* 受詞/名詞: 綠 */
+    .token-punctuation { background-color: #E2E2E2; }           /* 標點 */
+
+    /* 中文輔助翻譯 */
+    .sentence-chinese-row {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: #666;
+      border-top: 2px dashed #EEE;
+      padding-top: 10px;
+    }
+
+    /* 文法解說氣泡框 */
+    .grammar-explainer-bubble {
+      background-color: var(--color-yellow);
+      border: var(--border-width) solid var(--border-color);
+      border-radius: 16px;
+      padding: 15px 20px;
+      box-shadow: 4px 4px 0px var(--border-color);
+      min-height: 80px;
+      position: relative;
+      animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .explainer-title {
+      font-size: 16px;
+      font-weight: 850;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #C0392B;
+    }
+
+    .explainer-text {
+      font-size: 14.5px;
+      line-height: 1.5;
+      font-weight: 600;
+      color: #333;
+    }
+
+    /* 句型代換控制盤 */
+    .substitution-control-panel {
+      background-color: #FFFDF6;
+      border: var(--border-width) solid var(--border-color);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 4px 4px 0px var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .panel-section-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #777;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 2px solid #EEE;
+      padding-bottom: 5px;
+    }
+
+    .substitution-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sub-label {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text-color);
+    }
+
+    .sub-options-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .sub-option-btn {
+      padding: 6px 12px;
+      background-color: var(--color-white);
+      border: 2px solid var(--border-color);
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 2px 2px 0px var(--border-color);
+      transition: all 0.1s;
+    }
+
+    .sub-option-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 3px 3px 0px var(--border-color);
+    }
+
+    .sub-option-btn.selected {
+      background-color: var(--color-success);
+      transform: translateY(1px);
+      box-shadow: 1px 1px 0px var(--border-color);
+    }
+
+    /* === Slide 4: 句型練習 === */
+    .drill-slide {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .drill-card {
+      background-color: var(--color-white);
+      border: 3px solid var(--border-color);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 4px 4px 0px var(--border-color);
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .drill-q {
+      font-size: 22px;
+      font-weight: 800;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .drill-a {
+      font-size: 20px;
+      font-weight: 800;
+      color: #4ECDC4;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-left: 20px;
+      border-left: 4px solid var(--color-success);
+    }
+
+    .chinese-translation {
+      font-size: 14px;
+      color: #777;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    /* === Slide 5: 練習題介面 === */
+    .quiz-slide {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .quiz-progress-indicator {
+      font-size: 16px;
+      font-weight: 800;
+      background-color: var(--color-purple);
+      border: 2px solid var(--border-color);
+      padding: 5px 12px;
+      border-radius: 20px;
+      margin-bottom: 15px;
+      box-shadow: 2px 2px 0px var(--border-color);
+    }
+
+    .quiz-card {
+      width: 100%;
+      max-width: 600px;
+      background-color: var(--color-white);
+      border: 3px solid var(--border-color);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 5px 5px 0px var(--border-color);
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      position: relative;
+    }
+
+    .quiz-question {
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1.4;
+      white-space: pre-line;
+    }
+
+    .quiz-audio-play-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background-color: var(--bg-color);
+      padding: 10px 15px;
+      border-radius: 12px;
+      border: 2px solid var(--border-color);
+      margin-bottom: 10px;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option-btn {
+      padding: 12px 18px;
+      background-color: var(--color-white);
+      border: 2.5px solid var(--border-color);
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+      box-shadow: 2px 2px 0px var(--border-color);
+      transition: all 0.1s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .option-btn:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px var(--border-color);
+      background-color: var(--bg-color);
+    }
+
+    .option-btn.correct {
+      background-color: var(--color-success) !important;
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--border-color);
+    }
+
+    .option-btn.wrong {
+      background-color: var(--color-primary) !important;
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--border-color);
+    }
+
+    /* 拖曳拼句練習特有樣式 */
+    .sentence-build-area {
+      min-height: 60px;
+      border: 2.5px dashed var(--border-color);
+      border-radius: 12px;
+      background-color: var(--bg-color);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sentence-pool {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 15px;
+      padding: 10px;
+      border-top: 2px solid var(--bg-color);
+    }
+
+    .drag-word-card {
+      padding: 8px 14px;
+      background-color: var(--color-white);
+      border: 2.5px solid var(--border-color);
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 2px 2px 0px var(--border-color);
+      user-select: none;
+      transition: all 0.15s;
+    }
+
+    .drag-word-card.used {
+      opacity: 0.3;
+      pointer-events: none;
+      transform: scale(0.9);
+      box-shadow: none;
+    }
+
+    .drag-word-card:active {
+      transform: scale(0.95);
+    }
+
+    .quiz-actions {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 600px;
+      gap: 15px;
+    }
+
+    /* 抖動動畫 */
+    .shake {
+      animation: shakeAnim 0.4s ease;
+    }
+
+    @keyframes shakeAnim {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    /* 答對的打勾回饋 */
+    .feedback-icon {
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    /* 測驗完成結果頁 */
+    .quiz-result-view {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 15px;
+    }
+
+    .result-badge {
+      font-size: 60px;
+      animation: bounce 1.5s infinite;
+    }
+
+    .score-text {
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--text-color);
+    }
+
+    .score-desc {
+      font-size: 18px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    /* === 投影片底部導覽列 === */
+    .slide-footer-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-top: 25px;
+      gap: 15px;
+    }
+
+    .progress-bar-container {
+      flex: 1;
+      height: 14px;
+      background-color: var(--color-white);
+      border: 2.5px solid var(--border-color);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background-color: var(--color-success);
+      width: 0%;
+      transition: width 0.3s ease-out;
+    }
+
+    .nav-label {
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    /* === 畫布 Confetti (灑花) 容器 === */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 999;
+      display: block;
+    }
+
+    /* === 響應式微調 === */
+    @media (max-width: 600px) {
+      .welcome-banner h1 { font-size: 26px; }
+      .cover-slide h1 { font-size: 30px; }
+      .flashcard-wrapper { width: 100%; height: 210px; }
+      .card-front h2 { font-size: 28px; }
+      .card-back h2 { font-size: 24px; }
+      .sentence-viewer { font-size: 18px; }
+      .slide-container { padding: 15px; min-height: 420px; }
+      header { padding: 10px 15px; }
+      .btn { padding: 8px 14px; font-size: 14px; }
+      .grammar-token-brick { font-size: 18px; padding: 6px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 灑花 Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- 裝飾背景 -->
+  <svg class="bg-decor" style="top: 10%; left: 5%;" viewBox="0 0 24 24"><path class="decor-star" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"/></svg>
+  <svg class="bg-decor" style="top: 80%; right: 8%;" viewBox="0 0 24 24"><path class="decor-star" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"/></svg>
+  <svg class="bg-decor" style="top: 40%; right: 5%;" viewBox="0 0 24 24"><path class="decor-star" style="fill: var(--color-primary);" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"/></svg>
+
+  <!-- 頂部導覽列 -->
+  <header>
+    <a href="#" class="brand" onclick="goHome()">
+      <div class="brand-icon">⭐️</div>
+      <span>Super Fun 7</span>
+    </a>
+    <div class="nav-buttons">
+      <a href="../index.html" class="btn btn-info" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        返回傳送門
+      </a>
+      <button class="btn btn-warning" onclick="goHome()">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        回主選單
+      </button>
+    </div>
+  </header>
+
+  <!-- 主畫面 -->
+  <main>
+    <!-- 1. 首頁：課程選單 -->
+    <section id="home-screen">
+      <div class="welcome-banner">
+        <h1>Super Fun 7 互動文法教學樂園 🎈</h1>
+        <p>點選課程，進入「互動式代換句型沙盒」與「文法結構大拆解」！</p>
+      </div>
+
+      <div class="lesson-grid">
+        <!-- Lesson 1 Card -->
+        <div class="lesson-card" onclick="startLesson('lesson1')">
+          <div class="lesson-card-icon" style="background-color: var(--color-primary);">🗺️</div>
+          <h2>Lesson 1</h2>
+          <p>Where Are You From?</p>
+          <span style="font-size:12px; background:#f1f1f1; padding:3px 8px; border-radius:10px; margin-top:10px; border:1px solid #ccc; font-weight:700;">國家與 Be 動詞</span>
+        </div>
+        <!-- Lesson 2 Card -->
+        <div class="lesson-card" onclick="startLesson('lesson2')">
+          <div class="lesson-card-icon" style="background-color: var(--color-success);">🚴</div>
+          <h2>Lesson 2</h2>
+          <p>Free Time Activities</p>
+          <span style="font-size:12px; background:#f1f1f1; padding:3px 8px; border-radius:10px; margin-top:10px; border:1px solid #ccc; font-weight:700;">休閒喜好與動詞變化</span>
+        </div>
+        <!-- Lesson 3 Card -->
+        <div class="lesson-card" onclick="startLesson('lesson3')">
+          <div class="lesson-card-icon" style="background-color: var(--color-warning);">🍉</div>
+          <h2>Lesson 3</h2>
+          <p>Let's Eat Healthy!</p>
+          <span style="font-size:12px; background:#f1f1f1; padding:3px 8px; border-radius:10px; margin-top:10px; border:1px solid #ccc; font-weight:700;">可數數量與價錢問答</span>
+        </div>
+        <!-- Lesson 4 Card -->
+        <div class="lesson-card" onclick="startLesson('lesson4')">
+          <div class="lesson-card-icon" style="background-color: var(--color-purple);">🍜</div>
+          <h2>Lesson 4</h2>
+          <p>What Would You Like?</p>
+          <span style="font-size:12px; background:#f1f1f1; padding:3px 8px; border-radius:10px; margin-top:10px; border:1px solid #ccc; font-weight:700;">飲食點餐與客氣意願</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. 簡報教學與測驗畫面 -->
+    <section id="presentation-screen">
+      <div class="screen-header">
+        <div class="lesson-title-area">
+          <h2 id="current-lesson-header-title">Lesson Title</h2>
+        </div>
+        <div class="nav-label" id="slide-index-indicator">投影片 1 / 5</div>
+      </div>
+
+      <!-- 簡報本體幻燈片 -->
+      <div class="slide-container" id="slide-box">
+        
+        <!-- SLIDE 1: 課堂封面 -->
+        <div class="slide cover-slide active" id="slide-1">
+          <div class="cover-slide-illustration" id="slide1-illust">🗺️</div>
+          <h1 id="slide1-title">Where Are You From?</h1>
+          <h3 id="slide1-subtitle">Topic: Family Sharing Day</h3>
+          <button class="btn btn-primary" onclick="nextSlide()">
+            開始上課！
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+
+        <!-- SLIDE 2: 句型代換單字參考庫 (Vocabulary Substitution Bank) -->
+        <div class="slide vocabulary-slide" id="slide-2">
+          <h3 style="margin-bottom:5px; font-weight:800; font-size:22px; display:flex; align-items:center; gap:8px;">💡 句型代換字彙庫 (Substitution Bank)</h3>
+          <p style="font-size:14px; color:#666; font-weight:700; margin-bottom:15px; text-align:center;">
+            這些是後續文法代換練習時的單字材料喔！點擊卡片可看中文與聽發音：
+          </p>
+          
+          <div class="vocabulary-layout">
+            <div class="flashcard-wrapper" onclick="toggleFlashcard()">
+              <div class="flashcard" id="flashcard-obj">
+                <!-- 正面 -->
+                <div class="card-face card-front">
+                  <div style="font-size: 40px; margin-bottom:5px;" id="word-emoji">🇺🇸</div>
+                  <h2 id="word-eng">the USA</h2>
+                  <div class="ipa" id="word-ipa">/ðə ˌjuː.es.ˈeɪ/</div>
+                  <button class="audio-btn" onclick="playWordAudio(event)" title="點擊發音">
+                    🔊
+                  </button>
+                  <div class="card-tip">👆 點擊卡片翻面看中文</div>
+                </div>
+                <!-- 背面 -->
+                <div class="card-face card-back">
+                  <h2 id="word-chi">美國</h2>
+                  <div class="card-example" id="word-example">
+                    代換例句：He is from the USA.
+                  </div>
+                  <div class="card-tip">👆 點擊卡片翻面回英文</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flashcard-nav">
+              <button class="btn" onclick="prevWord()">上一字</button>
+              <span class="card-index" id="word-index-text">1 / 9</span>
+              <button class="btn btn-info" onclick="nextWord()">下一字</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SLIDE 3: 互動式句子文法教學與代換 (核心重構) -->
+        <div class="slide grammar-slide" id="slide-3">
+          <div class="grammar-container">
+            
+            <div class="grammar-guide-bar">
+              <span>🎯</span>
+              <span>文法探險：點選「下方控制盤」切換元素代換句子，點選「上方句子單字」解析結構！</span>
+            </div>
+
+            <!-- 動態展示卡片 -->
+            <div class="sentence-visualizer-card">
+              <div class="sentence-build-row" id="grammar-visual-sentence-row">
+                <!-- JS 動態生成可點擊的文法單字積木 -->
+              </div>
+              <div class="sentence-chinese-row" id="grammar-visual-sentence-chinese">
+                中文對照句子
+              </div>
+              <div style="display:flex; justify-content:center; margin-top:5px;">
+                <button class="btn btn-success" style="padding: 5px 12px; font-size:13px;" onclick="speakCurrentGrammarSentence()">🔊 朗讀整句英文</button>
+              </div>
+            </div>
+
+            <!-- 文法說明氣泡框 -->
+            <div class="grammar-explainer-bubble">
+              <div class="explainer-title" id="explainer-bubble-title">
+                🔍 結構大拆解
+              </div>
+              <div class="explainer-text" id="explainer-bubble-text">
+                點擊上方句子的任何一個單字，就會在這裡顯示它在文法中的角色與規則喔！
+              </div>
+            </div>
+
+            <!-- 句型代換控制盤 -->
+            <div class="substitution-control-panel" id="substitution-control-panel-obj">
+              <div class="panel-section-title">⚙️ 句型代換控制盤</div>
+              <div class="substitution-row" id="sub-row-container">
+                <!-- JS 動態加載代換項目 -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SLIDE 4: 常用句型練習 (Pattern Drill) -->
+        <div class="slide drill-slide" id="slide-4">
+          <h3 style="font-weight:800; font-size:22px; display:flex; align-items:center; gap:8px; margin-bottom:10px;">🗣️ 句型大聲朗讀與複習 (Pattern Drill)</h3>
+          <div id="drill-list" style="display:flex; flex-direction:column; gap:15px; width:100%;">
+            <!-- JS 動態加載句型卡 -->
+          </div>
+        </div>
+
+        <!-- SLIDE 5: 句子文法練習題 (Quiz) -->
+        <div class="slide quiz-slide" id="slide-5">
+          <div id="quiz-playing-panel" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+            <div class="quiz-progress-indicator" id="quiz-question-number">第 1 / 5 題</div>
+            
+            <div class="quiz-card" id="quiz-card-obj">
+              <div class="quiz-question" id="quiz-question-text">
+                題目載入中...
+              </div>
+
+              <!-- 聽力題目播放區 -->
+              <div class="quiz-audio-play-row" id="quiz-audio-row" style="display:none;">
+                <button class="btn btn-primary" onclick="playQuizAudio()" style="padding: 6px 12px; font-size: 14px;">
+                  🔊 點我播放句子發音
+                </button>
+                <span style="font-size: 13px; font-weight:700; color:#555;">(點擊聆聽，並選出中文翻譯)</span>
+              </div>
+
+              <!-- 拼句題專用區 -->
+              <div id="quiz-rebuild-container" style="display:none; flex-direction:column; gap:15px; margin-top:10px;">
+                <div class="sentence-build-area" id="sentence-build-box">
+                  <!-- 單字積木 -->
+                </div>
+                <div class="sentence-pool" id="sentence-words-pool">
+                  <!-- 字池 -->
+                </div>
+              </div>
+
+              <!-- 選擇題選項區 -->
+              <div class="quiz-options" id="quiz-options-container">
+                <!-- 選項 -->
+              </div>
+            </div>
+
+            <div class="quiz-actions">
+              <button class="btn" onclick="prevQuiz()" id="quiz-prev-btn">上一題</button>
+              <button class="btn btn-success" id="quiz-submit-rebuild-btn" style="display:none;" onclick="checkRebuildAnswer()">送出答案</button>
+              <button class="btn btn-info" onclick="nextQuiz()" id="quiz-next-btn" style="visibility: hidden;">下一題</button>
+            </div>
+          </div>
+
+          <!-- 測驗完成結果面板 -->
+          <div id="quiz-result-panel" class="quiz-result-view" style="display:none; padding:40px 20px;">
+            <div class="result-badge">🏆</div>
+            <div class="score-text">你得到了 <span id="final-score" style="color:#FF6B6B;">100</span> 分！</div>
+            <div class="score-desc" id="final-desc">哇！你太棒了！全對！</div>
+            <div style="display:flex; gap:15px; margin-top:15px;">
+              <button class="btn btn-primary" onclick="restartLessonQuiz()">再挑戰一次</button>
+              <button class="btn btn-warning" onclick="goHome()">返回首頁</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 投影片底部控制區 -->
+      <div class="slide-footer-controls">
+        <button class="btn btn-warning" onclick="prevSlide()" id="prev-slide-btn">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
+          上一頁
+        </button>
+        
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="slide-progress-bar"></div>
+        </div>
+
+        <button class="btn btn-success" onclick="nextSlide()" id="next-slide-btn">
+          下一頁
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- === JS 程式邏輯 === -->
+  <script>
+    // ==========================================
+    // 1. 課堂與文法資料庫 (重整：文法解說與句子級測驗)
+    // ==========================================
+    const courseData = {
+      lesson1: {
+        title: "Lesson 1: Where Are You From?",
+        theme: "Family Sharing Day",
+        icon: "🗺️",
+        words: [
+          { english: "the USA", chinese: "美國", ipa: "/ðə ˌjuː.es.ˈeɪ/", example: "He is from the USA.", emoji: `<svg viewBox="0 0 26 14" width="70" height="38" style="border:2px solid #2D2D2D; border-radius:6px; box-shadow: 2px 2px 0px #2D2D2D;"><rect width="26" height="14" fill="#B22234"/><rect width="26" height="1" y="1" fill="#fff"/><rect width="26" height="1" y="3" fill="#fff"/><rect width="26" height="1" y="5" fill="#fff"/><rect width="26" height="1" y="7" fill="#fff"/><rect width="26" height="1" y="9" fill="#fff"/><rect width="26" height="1" y="11" fill="#fff"/><rect width="26" height="1" y="13" fill="#fff"/><rect width="10.4" height="7.53" fill="#3C3B6E"/></svg>` },
+          { english: "Japan", chinese: "日本", ipa: "/dʒəˈpæn/", example: "Japan is a beautiful country.", emoji: `<svg viewBox="0 0 300 200" width="70" height="47" style="border:2px solid #2D2D2D; border-radius:6px; box-shadow: 2px 2px 0px #2D2D2D;"><rect width="300" height="200" fill="#fff"/><circle cx="150" cy="100" r="60" fill="#bc002d"/></svg>` },
+          { english: "the UK", chinese: "英國", ipa: "/ðə ˌjuː.ˈkeɪ/", example: "She is from the UK.", emoji: `<svg viewBox="0 0 60 30" width="70" height="35" style="border:2px solid #2D2D2D; border-radius:6px; box-shadow: 2px 2px 0px #2D2D2D;"><rect width="60" height="30" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#C8102E" stroke-width="2"/><path d="M30,0 L30,30 M0,15 L60,15" stroke="#fff" stroke-width="10"/><path d="M30,0 L30,30 M0,15 L60,15" stroke="#C8102E" stroke-width="6"/></svg>` },
+          { english: "Taiwan", chinese: "臺灣", ipa: "/taɪˈwɑːn/", example: "I am from Taiwan.", emoji: `<svg viewBox="0 0 30 20" width="70" height="47" style="border:2px solid #2D2D2D; border-radius:6px; box-shadow: 2px 2px 0px #2D2D2D;"><rect width="30" height="20" fill="#F00"/><rect width="15" height="10" fill="#009"/><circle cx="7.5" cy="5" r="2.5" fill="#FFF"/><circle cx="7.5" cy="5" r="2" fill="#009"/><polygon points="7.5,2 7.8,3.5 9.3,3 8.3,4.2 9.7,4.7 8.2,5.2 9,6.5 7.7,5.8 7.5,7.3 7.3,5.8 6,6.5 6.8,5.2 5.3,4.7 6.7,4.2 5.7,3 7.2,3.5" fill="#FFF"/></svg>` },
+          { english: "France", chinese: "法國", ipa: "/fræns/", example: "Is she from France?", emoji: `<svg viewBox="0 0 900 600" width="70" height="47" style="border:2px solid #2D2D2D; border-radius:6px; box-shadow: 2px 2px 0px #2D2D2D;"><rect width="300" height="600" fill="#00209F"/><rect x="300" width="300" height="600" fill="#fff"/><rect x="600" width="300" height="600" fill="#F42E38"/></svg>` },
+          { english: "Australia", chinese: "澳洲", ipa: "/ɒˈstreɪ.li.ə/", example: "They are from Australia.", emoji: `<svg viewBox="0 0 60 30" width="70" height="35" style="border:2px solid #2D2D2D; border-radius:6px; box-shadow: 2px 2px 0px #2D2D2D;"><rect width="60" height="30" fill="#071330"/><path d="M0,0 L30,15 M30,0 L0,15" stroke="#fff" stroke-width="3"/><path d="M0,0 L30,15 M30,0 L0,15" stroke="#C8102E" stroke-width="1"/><path d="M15,0 L15,15 M0,7.5 L30,7.5" stroke="#fff" stroke-width="5"/><path d="M15,0 L15,15 M0,7.5 L30,7.5" stroke="#C8102E" stroke-width="3"/><circle cx="45" cy="7.5" r="1.5" fill="#fff"/><circle cx="37.5" cy="18.5" r="1.5" fill="#fff"/><circle cx="52.5" cy="18.5" r="1.5" fill="#fff"/><circle cx="45" cy="22.5" r="1.5" fill="#fff"/><circle cx="48" cy="13.5" r="0.8" fill="#fff"/></svg>` },
+          { english: "Vietnam", chinese: "越南", ipa: "/ˌvjet.ˈnæm/", example: "He is from Vietnam.", emoji: `<svg viewBox="0 0 900 600" width="70" height="47" style="border:2px solid #2D2D2D; border-radius:6px; box-shadow: 2px 2px 0px #2D2D2D;"><rect width="900" height="600" fill="#da251d"/><polygon points="450,140 488,258 588,258 507,331 538,449 450,376 362,449 393,331 312,258 412,258" fill="#ffff00"/></svg>` },
+          { english: "from", chinese: "來自", ipa: "/frɒm/", example: "Where are you from?", emoji: "📍" },
+          { english: "Korea", chinese: "韓國", ipa: "/kəˈriː.ə/", example: "We are from Korea.", emoji: `<svg viewBox="0 0 30 20" width="70" height="47" style="border:2px solid #2D2D2D; border-radius:6px; box-shadow: 2px 2px 0px #2D2D2D;"><rect width="30" height="20" fill="#fff"/><circle cx="15" cy="10" r="4.5" fill="#cd2e3a"/><path d="M15,14.5 A2.25,2.25 0 0,0 15,10 A2.25,2.25 0 0,1 15,5.5 A4.5,4.5 0 0,1 15,14.5" fill="#0047a0"/><path d="M7,5 L9,7" stroke="#000" stroke-width="1.2"/><path d="M21,11 L23,13" stroke="#000" stroke-width="1.2"/><path d="M7,15 L9,13" stroke="#000" stroke-width="1.2"/><path d="M21,5 L23,7" stroke="#000" stroke-width="1.2"/></svg>` }
+        ],
+        sentences: [
+          { q: "Where are you from?", qCh: "你來自哪裡？", a: "I’m from Taiwan.", aCh: "我來自臺灣。" },
+          { q: "Is he from the USA?", qCh: "他來自美國嗎？", a: "Yes, he is.", aCh: "是的，他是。" },
+          { q: "Is she from France?", qCh: "她來自法國嗎？", a: "No, she isn’t. She’s from the UK.", aCh: "不，她不是。她來自英國。" }
+        ],
+        // 互動式代換文法核心資料
+        grammar: {
+          modes: [
+            { id: "mode_q", label: "問句代換：Where are you from?" },
+            { id: "mode_a", label: "答句代換：I'm from Taiwan." }
+          ],
+          // 當前選擇的代換軌道定義
+          tracks: {
+            mode_q: [
+              { key: "subject", label: "代換主詞 (Subject)", options: ["you", "he", "she", "they", "we"] }
+            ],
+            mode_a: [
+              { key: "subject", label: "代換主詞 (Subject)", options: ["I", "he", "she", "they", "we", "you"] },
+              { key: "country", label: "代換國家 (Country)", options: ["Taiwan", "Japan", "the USA", "the UK", "France", "Australia"] }
+            ]
+          },
+          // 句子重組與單字文法解析邏輯
+          buildSentence: function(mode, state) {
+            let tokens = [];
+            let chinese = "";
+
+            if (mode === "mode_q") {
+              const sub = state.subject || "you";
+              let be = "are";
+              let subCh = "你";
+              
+              if (sub === "he") { be = "is"; subCh = "他"; }
+              else if (sub === "she") { be = "is"; subCh = "她"; }
+              else if (sub === "they") { be = "are"; subCh = "他們"; }
+              else if (sub === "we") { be = "are"; subCh = "我們"; }
+
+              tokens = [
+                { text: "Where", type: "token-helper", expl: "【Where】是疑問代名詞，用來詢問「地點/哪裡」，必須放在句子的最前面喔！" },
+                { text: be, type: "token-verb", expl: `【${be}】是 be 動詞。因為後面的主詞是「${sub}」，所以配合變化為「${be}」。` },
+                { text: sub, type: "token-subject", expl: `【${sub}】是主詞，表示這句話在詢問「${subCh}」。` },
+                { text: "from", type: "token-adverb", expl: "【from】是介系詞，在這裡表示「來自」。" },
+                { text: "?", type: "token-punctuation", expl: "【?】是問號，放在疑問句的句尾。" }
+              ];
+              chinese = `${subCh}來自哪裡？`;
+
+            } else {
+              const sub = state.subject || "I";
+              const country = state.country || "Taiwan";
+              
+              let be = "am";
+              let subCh = "我";
+              if (sub === "he") { be = "is"; subCh = "他"; }
+              else if (sub === "she") { be = "is"; subCh = "她"; }
+              else if (sub === "they") { be = "are"; subCh = "他們"; }
+              else if (sub === "we") { be = "are"; subCh = "我們"; }
+              else if (sub === "you") { be = "are"; subCh = "你"; }
+
+              let countryCh = "臺灣";
+              if (country === "Japan") countryCh = "日本";
+              else if (country === "the USA") countryCh = "美國";
+              else if (country === "the UK") countryCh = "英國";
+              else if (country === "France") countryCh = "法國";
+              else if (country === "Australia") countryCh = "澳洲";
+
+              let countryExpl = `【${country}】是國家名詞。`;
+              if (country.startsWith("the ")) {
+                countryExpl += " 💡 注意：美國 (the USA) 與英國 (the UK) 前面一定要加冠詞 the 喔！";
+              }
+
+              tokens = [
+                { text: sub, type: "token-subject", expl: `【${sub}】是主詞，表示這句話的發話對象是「${subCh}」。` },
+                { text: be, type: "token-verb", expl: `【${be}】是 be 動詞，用來配合主詞「${sub}」進行時態與人稱的連結。` },
+                { text: "from", type: "token-adverb", expl: "【from】是介系詞，表示「來自某個地方」。" },
+                { text: country, type: "token-object", expl: countryExpl },
+                { text: ".", type: "token-punctuation", expl: "【.】是句號，放在陳述句句尾。" }
+              ];
+              chinese = `${subCh}來自${countryCh}。`;
+            }
+
+            return { tokens, chinese };
+          }
+        },
+        quizzes: [
+          {
+            type: "choice",
+            question: "文法填充：Is she from France? \n→ No, she isn't. She's from ______ UK.",
+            options: ["the", "a", "an", "(不填)"],
+            answer: 0
+          },
+          {
+            type: "choice",
+            question: "文法結構：Where ______ they from?",
+            options: ["are", "is", "am", "do"],
+            answer: 0
+          },
+          {
+            type: "rebuild",
+            question: "重組句子：Is he from the USA? (他來自美國嗎？)",
+            words: ["Is", "he", "from", "the", "USA", "?"],
+            answer: ["Is", "he", "from", "the", "USA", "?"]
+          },
+          {
+            type: "listening",
+            question: "句子聽力理解：點選喇叭聆聽句子發音，選出正確的中文意思。",
+            audioText: "Where are you from?",
+            options: ["你來自哪裡？", "他來自美國嗎？", "他們來自英國嗎？", "她來自法國嗎？"],
+            answer: 0
+          },
+          {
+            type: "choice",
+            question: "句型對話：A: Where is Lily from?\nB: ______ from Japan.",
+            options: ["She's", "He's", "They're", "I'm"],
+            answer: 0
+          }
+        ]
+      },
+      lesson2: {
+        title: "Lesson 2: Free Time Activities",
+        theme: "Family Sharing Day",
+        icon: "🚴",
+        words: [
+          { english: "play basketball", chinese: "打籃球", ipa: "/pleɪ ˈbɑː.skɪt.bɔːl/", example: "I play basketball on weekends.", emoji: "🏀" },
+          { english: "watch TV", chinese: "看電視", ipa: "/wɒtʃ ˌtiː.ˈviː/", example: "She likes to watch TV.", emoji: "📺" },
+          { english: "play video games", chinese: "打電動遊戲", ipa: "/pleɪ ˈvɪd.i.əʊ ɡeɪmz/", example: "They play video games together.", emoji: "🎮" },
+          { english: "go shopping", chinese: "逛街購物", ipa: "/ɡəʊ ˈʃɒp.ɪŋ/", example: "He likes to go shopping.", emoji: "🛍️" },
+          { english: "ride a bike", chinese: "騎腳踏車", ipa: "/raɪd ə baɪk/", example: "I can ride a bike.", emoji: "🚲" },
+          { english: "go camping", chinese: "露營", ipa: "/ɡəʊ ˈkæm.pɪŋ/", example: "We go camping in autumn.", emoji: "⛺" },
+          { english: "visit my friend", chinese: "拜訪朋友", ipa: "/ˈvɪz.ɪt maɪ frend/", example: "I visit my friend on Sundays.", emoji: "🙋" },
+          { english: "free time", chinese: "空閒時間", ipa: "/friː taɪm/", example: "What do you do in your free time?", emoji: "⏰" }
+        ],
+        sentences: [
+          { q: "What do you like to do in your free time?", qCh: "你有空時喜歡做什麼？", a: "I like to ride a bike.", aCh: "我喜歡騎腳踏車。" },
+          { q: "What does he like to do in his free time?", qCh: "他有空時喜歡做什麼？", a: "He likes to go camping.", aCh: "他喜歡露營。" }
+        ],
+        grammar: {
+          modes: [
+            { id: "mode_q", label: "問句代換：What do you like to do in your free time?" },
+            { id: "mode_a", label: "答句代換：I like to ride a bike." }
+          ],
+          tracks: {
+            mode_q: [
+              { key: "subject", label: "代換主詞 (Subject)", options: ["you", "he", "she", "they"] }
+            ],
+            mode_a: [
+              { key: "subject", label: "代換主詞 (Subject)", options: ["I", "he", "she", "they"] },
+              { key: "activity", label: "代換休閒活動 (Activity)", options: ["ride a bike", "play basketball", "watch TV", "go camping", "play video games"] }
+            ]
+          },
+          buildSentence: function(mode, state) {
+            let tokens = [];
+            let chinese = "";
+
+            if (mode === "mode_q") {
+              const sub = state.subject || "you";
+              let helper = "do";
+              let poss = "your";
+              let subCh = "你";
+              let possCh = "你";
+              
+              if (sub === "he") { helper = "does"; poss = "his"; subCh = "他"; possCh = "他"; }
+              else if (sub === "she") { helper = "does"; poss = "her"; subCh = "她"; possCh = "她"; }
+              else if (sub === "they") { helper = "do"; poss = "their"; subCh = "他們"; possCh = "他們"; }
+
+              tokens = [
+                { text: "What", type: "token-helper", expl: "【What】是疑問詞，用來詢問「什麼」，置於句首。" },
+                { text: helper, type: "token-verb", expl: `【${helper}】是助動詞。因為主詞是「${sub}」，所以用「${helper}」來幫助形成問句。` },
+                { text: sub, type: "token-subject", expl: `【${sub}】是主詞。` },
+                { text: "like to do", type: "token-verb", expl: "【like to do】是動詞片語「喜歡去做某事」，like 後面用 to 連接第二個動詞原形 do。" },
+                { text: "in", type: "token-adverb", expl: "【in】是介系詞，表示「在...期間」。" },
+                { text: poss, type: "token-subject", expl: `【${poss}】是所有格「${possCh}的」，必須和前面的主詞「${sub}」呼應喔！` },
+                { text: "free time", type: "token-object", expl: "【free time】是名詞片語「空閒時間」。" },
+                { text: "?", type: "token-punctuation", expl: "【?】是問號。" }
+              ];
+              chinese = `${subCh}空閒時間喜歡做什麼？`;
+
+            } else {
+              const sub = state.subject || "I";
+              const act = state.activity || "ride a bike";
+              
+              let likeText = "like";
+              let subCh = "我";
+              if (sub === "he") { likeText = "likes"; subCh = "他"; }
+              else if (sub === "she") { likeText = "likes"; subCh = "她"; }
+              else if (sub === "they") { likeText = "like"; subCh = "他們"; }
+
+              let actCh = "騎腳踏車";
+              if (act === "play basketball") actCh = "打籃球";
+              else if (act === "watch TV") actCh = "看電視";
+              else if (act === "go camping") actCh = "露營";
+              else if (act === "play video games") actCh = "打電動遊戲";
+
+              tokens = [
+                { text: sub, type: "token-subject", expl: `【${sub}】是主詞。` },
+                { text: likeText, type: "token-verb", expl: `【${likeText}】是動詞。 💡 注意：當主詞是單數 He/She 時，like 要加上 s 變成 likes！` },
+                { text: "to", type: "token-adverb", expl: "【to】是不定詞介系詞，用來連接後面的動詞原形。" },
+                { text: act, type: "token-object", expl: `【${act}】是動作片語原形，翻譯為「${actCh}」。` },
+                { text: ".", type: "token-punctuation", expl: "【.】是句號。" }
+              ];
+              chinese = `${subCh}喜歡${actCh}。`;
+            }
+
+            return { tokens, chinese };
+          }
+        },
+        quizzes: [
+          {
+            type: "choice",
+            question: "文法填充：What ______ he like to do in his free time?",
+            options: ["does", "do", "doing", "is"],
+            answer: 0
+          },
+          {
+            type: "choice",
+            question: "主詞一致性：She ______ to watch TV in her free time.",
+            options: ["likes", "like", "liking", "to like"],
+            answer: 0
+          },
+          {
+            type: "rebuild",
+            question: "重組句子：What do they like to do in their free time? (他們有空時喜歡做什麼？)",
+            words: ["What", "do", "they", "like", "to", "do", "in", "their", "free", "time", "?"],
+            answer: ["What", "do", "they", "like", "to", "do", "in", "their", "free", "time", "?"]
+          },
+          {
+            type: "listening",
+            question: "句子聽力理解：點選喇叭聆聽句子發音，選出正確的中文意思。",
+            audioText: "I like to go camping.",
+            options: ["我喜歡露營。", "我喜歡看電視。", "他喜歡打籃球。", "她喜歡騎腳踏車。"],
+            answer: 0
+          },
+          {
+            type: "choice",
+            question: "代換應用：Helen (主詞為 she) likes to ______ video games in her free time.",
+            options: ["play", "ride", "go", "visit"],
+            answer: 0
+          }
+        ]
+      },
+      lesson3: {
+        title: "Lesson 3: Let's Eat Healthy!",
+        theme: "Let's Eat Healthy!",
+        icon: "🍉",
+        words: [
+          { english: "eggs", chinese: "雞蛋 (複數)", ipa: "/eɡz/", example: "I need ten eggs.", emoji: "🥚" },
+          { english: "sandwiches", chinese: "三明治 (複數)", ipa: "/ˈsæn.wɪdʒ.ɪz/", example: "She makes sandwiches.", emoji: "🥪" },
+          { english: "oranges", chinese: "柳橙 (複數)", ipa: "/ˈɒr.ɪndʒ.ɪz/", example: "Oranges are sweet.", emoji: "🍊" },
+          { english: "strawberries", chinese: "草莓 (複數)", ipa: "/ˈstrɔː.bər.iz/", example: "I love strawberries.", emoji: "🍓" },
+          { english: "watermelons", chinese: "西瓜 (複數)", ipa: "/ˈwɔː.təˌmel.ənz/", example: "Watermelons are big.", emoji: "🍉" },
+          { english: "cookies", chinese: "餅乾 (複數)", ipa: "/ˈkʊk.iz/", example: "Cookies are delicious.", emoji: "🍪" },
+          { english: "hamburgers", chinese: "漢堡 (複數)", ipa: "/ˈhæmˌbɜː.ɡərz/", example: "He eats hamburgers.", emoji: "🍔" },
+          { english: "hot dogs", chinese: "熱狗 (複數)", ipa: "/hɒt dɒɡz/", example: "Do you like hot dogs?", emoji: "🌭" },
+          { english: "how many", chinese: "幾個", ipa: "/haʊ ˈmen.i/", example: "How many eggs do you need?", emoji: "❓" },
+          { english: "need", chinese: "需要", ipa: "/niːd/", example: "I need some water.", emoji: "👉" },
+          { english: "how much", chinese: "多少錢", ipa: "/haʊ mʌtʃ/", example: "How much is the hot dog?", emoji: "💰" },
+          { english: "dollar", chinese: "元 (貨幣)", ipa: "/ˈdɒl.ər/", example: "It is fifty dollars.", emoji: "💵" },
+          { english: "hundred", chinese: "百", ipa: "/ˈhʌn.drəd/", example: "One hundred dollars.", emoji: "💯" }
+        ],
+        sentences: [
+          { q: "How many eggs do you need?", qCh: "你需要幾顆雞蛋？", a: "I need ten eggs.", aCh: "我需要十顆雞蛋。" },
+          { q: "How much is the hot dog?", qCh: "這個熱狗多少錢？", a: "It’s fifty dollars.", aCh: "它是五十元。" },
+          { q: "How much are the cookies?", qCh: "這些餅乾多少錢？", a: "They’re one hundred dollars.", aCh: "它們是一百元。" }
+        ],
+        grammar: {
+          modes: [
+            { id: "mode_how_many", label: "數量句型：How many eggs do you need?" },
+            { id: "mode_how_much", label: "價錢句型：How much is the hot dog / are the cookies?" }
+          ],
+          tracks: {
+            mode_how_many: [
+              { key: "food", label: "代換可數複數名詞 (Food)", options: ["eggs", "sandwiches", "strawberries", "oranges"] },
+              { key: "subject", label: "代換主詞 (Subject)", options: ["you", "he", "she"] },
+              { key: "number", label: "代換答句數量 (Number)", options: ["five", "ten", "twelve"] }
+            ],
+            mode_how_much: [
+              { key: "item", label: "代換詢問物品 (Item)", options: ["the hot dog", "the hamburger", "the cookies", "the oranges"] },
+              { key: "price", label: "代換價格 (Price)", options: ["fifty", "eighty", "one hundred"] }
+            ]
+          },
+          buildSentence: function(mode, state) {
+            let tokens = [];
+            let chinese = "";
+
+            if (mode === "mode_how_many") {
+              const food = state.food || "eggs";
+              const sub = state.subject || "you";
+              const num = state.number || "ten";
+
+              let helper = "do";
+              let needVerb = "need";
+              let subCh = "你";
+              if (sub === "he") { helper = "does"; needVerb = "needs"; subCh = "他"; }
+              else if (sub === "she") { helper = "does"; needVerb = "needs"; subCh = "她"; }
+
+              let foodCh = "雞蛋";
+              if (food === "sandwiches") foodCh = "三明治";
+              else if (food === "strawberries") foodCh = "草莓";
+              else if (food === "oranges") foodCh = "柳橙";
+
+              let numCh = "十";
+              if (num === "five") numCh = "五";
+              else if (num === "twelve") numCh = "十二";
+
+              tokens = [
+                { text: "How many", type: "token-helper", expl: "【How many】是用來詢問「數量有多少」，後面一定要接可數名詞的「複數形」。" },
+                { text: food, type: "token-object", expl: `【${food}】是可數名詞的複數型。` },
+                { text: `${helper} ${sub} need?`, type: "token-verb", expl: `【${helper} ${sub} need?】問句結構。因為主詞是「${sub}」，所以助動詞配合用「${helper}」。` },
+                { text: "→", type: "token-punctuation", expl: "答句對應：" },
+                { text: sub, type: "token-subject", expl: `答句主詞為【${sub}】。` },
+                { text: needVerb, type: "token-verb", expl: `【${needVerb}】是動詞。 💡 注意：當主詞是單數 He/She 時，need 要加 s 變成 needs！` },
+                { text: num, type: "token-helper", expl: `【${num}】是數量詞，表示「${numCh}」。` },
+                { text: food, type: "token-object", expl: `【${food}】表示「${foodCh}」。` }
+              ];
+              chinese = `問：${subCh}需要幾顆${foodCh}？ \n 答：${subCh}需要${numCh}顆${foodCh}。`;
+
+            } else {
+              const item = state.item || "the hot dog";
+              const price = state.price || "fifty";
+
+              // 判斷物品是單數還是複數
+              const isPlural = item.endsWith("s");
+              let be = isPlural ? "are" : "is";
+              let ansPronoun = isPlural ? "They're" : "It's";
+
+              let itemCh = "熱狗";
+              if (item === "the hamburger") itemCh = "漢堡";
+              else if (item === "the cookies") itemCh = "餅乾";
+              else if (item === "the oranges") itemCh = "柳橙";
+
+              let priceCh = "五十";
+              if (price === "eighty") priceCh = "八十";
+              else if (price === "one hundred") priceCh = "一百";
+
+              tokens = [
+                { text: "How much", type: "token-helper", expl: "【How much】是用來詢問「價格多少錢」。" },
+                { text: be, type: "token-verb", expl: `【${be}】是 be 動詞。因為詢問對象「${item}」是${isPlural ? '複數' : '單數'}，所以用「${be}」。` },
+                { text: item, type: "token-object", expl: `【${item}】是詢問的物品（${itemCh}）。` },
+                { text: "?", type: "token-punctuation", expl: "問號。" },
+                { text: "→", type: "token-punctuation", expl: "答句：" },
+                { text: ansPronoun, type: "token-subject", expl: `【${ansPronoun}】是主詞代名詞+be動詞縮寫。💡 規則：單數答句用 It's，複數用 They're！` },
+                { text: price, type: "token-helper", expl: `【${price}】是金額數字（${priceCh}）。` },
+                { text: "dollars", type: "token-object", expl: "【dollars】是貨幣單位（元），在數字大於 1 時要加 s 喔！" }
+              ];
+              chinese = `問：這個${itemCh}多少錢？ \n 答：它是${priceCh}元。`;
+            }
+
+            return { tokens, chinese };
+          }
+        },
+        quizzes: [
+          {
+            type: "choice",
+            question: "文法填充：How ______ strawberries do you need?",
+            options: ["many", "much", "is", "are"],
+            answer: 0
+          },
+          {
+            type: "choice",
+            question: "文法填充：How ______ is the hot dog?",
+            options: ["much", "many", "dollars", "hundred"],
+            answer: 0
+          },
+          {
+            type: "choice",
+            question: "單複數句型代換：How much are the cookies?\n→ ______ ninety dollars.",
+            options: ["They're", "It's", "There are", "This is"],
+            answer: 0
+          },
+          {
+            type: "rebuild",
+            question: "重組句子：I need ten eggs. (我需要十顆雞蛋。)",
+            words: ["I", "need", "ten", "eggs", "."],
+            answer: ["I", "need", "ten", "eggs", "."]
+          },
+          {
+            type: "listening",
+            question: "句子聽力理解：點選喇叭聆聽句子發音，選出正確的中文意思。",
+            audioText: "How much is the hamburger?",
+            options: ["這個漢堡多少錢？", "你需要幾個漢堡？", "這些餅乾多少錢？", "這個熱狗五十元嗎？"],
+            answer: 0
+          }
+        ]
+      },
+      lesson4: {
+        title: "Lesson 4: What Would You Like?",
+        theme: "Let's Eat Healthy!",
+        icon: "🍜",
+        words: [
+          { english: "breakfast", chinese: "早餐", ipa: "/ˈbrek.fəst/", example: "What would you like for breakfast?", emoji: "🍳" },
+          { english: "dinner", chinese: "晚餐", ipa: "/ˈdɪn.ər/", example: "We eat dinner together.", emoji: "🍲" },
+          { english: "rice", chinese: "米飯", ipa: "/raɪs/", example: "I eat rice every day.", emoji: "🍚" },
+          { english: "bread", chinese: "麵包", ipa: "/bred/", example: "Would you like some bread?", emoji: "🍞" },
+          { english: "soup", chinese: "湯", ipa: "/suːp/", example: "The soup is hot.", emoji: "🥣" },
+          { english: "chicken", chinese: "雞肉", ipa: "/ˈtʃɪk.ɪn/", example: "He likes chicken.", emoji: "🍗" },
+          { english: "lunch", chinese: "午餐", ipa: "/lʌntʃ/", example: "Would you like some rice for lunch?", emoji: "🍱" },
+          { english: "would like", chinese: "想要", ipa: "/wʊd laɪk/", example: "I would like some noodles.", emoji: "✨" },
+          { english: "noodles", chinese: "麵", ipa: "/ˈnuː.dڵz/", example: "Noodles are long.", emoji: "🍜" }
+        ],
+        sentences: [
+          { q: "What would you like for breakfast?", qCh: "你早餐想吃什麼？", a: "I would like some bread.", aCh: "我想吃一些麵包。" },
+          { q: "Would you like some rice for lunch?", qCh: "你午餐想吃一些米飯嗎？", a: "Yes, please. (好的，麻煩了。)", aCh: "No, thank you. (不用，謝謝。)" }
+        ],
+        grammar: {
+          modes: [
+            { id: "mode_what_like", label: "點餐句型：What would you like for breakfast?" },
+            { id: "mode_would_you", label: "意願句型：Would you like some rice?" }
+          ],
+          tracks: {
+            mode_what_like: [
+              { key: "subject", label: "代換主詞 (Subject)", options: ["you", "he", "she"] },
+              { key: "meal", label: "代換餐點 (Meal)", options: ["breakfast", "lunch", "dinner"] },
+              { key: "food", label: "代換食物 (Food)", options: ["bread", "rice", "soup", "chicken", "noodles"] }
+            ],
+            mode_would_you: [
+              { key: "food", label: "代換食物 (Food)", options: ["rice", "bread", "soup", "chicken", "noodles"] },
+              { key: "reply", label: "選擇回應 (Reply)", options: ["Yes, please", "No, thank you"] }
+            ]
+          },
+          buildSentence: function(mode, state) {
+            let tokens = [];
+            let chinese = "";
+
+            if (mode === "mode_what_like") {
+              const sub = state.subject || "you";
+              const meal = state.meal || "breakfast";
+              const food = state.food || "bread";
+
+              let subCh = "你";
+              let replySub = "I";
+              let replySubCh = "我";
+              if (sub === "he") { subCh = "他"; replySub = "He"; replySubCh = "他"; }
+              else if (sub === "she") { subCh = "她"; replySub = "She"; replySubCh = "她"; }
+
+              let mealCh = "早餐";
+              if (meal === "lunch") mealCh = "午餐";
+              else if (meal === "dinner") mealCh = "晚餐";
+
+              let foodCh = "麵包";
+              if (food === "rice") foodCh = "米飯";
+              else if (food === "soup") foodCh = "湯";
+              else if (food === "chicken") foodCh = "雞肉";
+              else if (food === "noodles") foodCh = "麵條";
+
+              tokens = [
+                { text: "What would", type: "token-helper", expl: "【What would】是客氣詢問「想吃什麼」的句首開頭。" },
+                { text: sub, type: "token-subject", expl: `【${sub}】是詢問的主詞。` },
+                { text: "like for", type: "token-adverb", expl: "【like for】表示「想要把...當作某餐吃」。" },
+                { text: meal, type: "token-object", expl: `【${meal}】表示「${mealCh}」。` },
+                { text: "?", type: "token-punctuation", expl: "問號。" },
+                { text: "→", type: "token-punctuation", expl: "答句：" },
+                { text: replySub, type: "token-subject", expl: `答句對應主詞為【${replySub}】（${replySubCh}）。` },
+                { text: "would like", type: "token-verb", expl: "【would like】是「想要」的客氣說法，不論主詞是單數或複數皆不需變形！" },
+                { text: "some " + food, type: "token-object", expl: `【some ${food}】意為「一些${foodCh}」。` }
+              ];
+              chinese = `問：${subCh}${mealCh}想吃什麼？ \n 答：${replySubCh}想吃一些${foodCh}。`;
+
+            } else {
+              const food = state.food || "rice";
+              const reply = state.reply || "Yes, please";
+
+              let foodCh = "米飯";
+              if (food === "bread") foodCh = "麵包";
+              else if (food === "soup") foodCh = "湯";
+              else if (food === "chicken") foodCh = "雞肉";
+              else if (food === "noodles") foodCh = "麵條";
+
+              let replyCh = "好的，麻煩了。";
+              let replyExpl = "【Yes, please】是客氣接受他人提議時的禮貌說法。";
+              let replyColorClass = "token-success";
+
+              if (reply === "No, thank you") {
+                replyCh = "不用了，謝謝。";
+                replyExpl = "【No, thank you】是客氣拒絕他人提議時的禮貌說法。在英文中拒絕提議要記得說 thank you 喔！";
+                replyColorClass = "token-verb";
+              }
+
+              tokens = [
+                { text: "Would you like", type: "token-helper", expl: "【Would you like】是客氣詢問「你是否想要...？」的常見問法。" },
+                { text: "some " + food, type: "token-object", expl: `【some ${food}】詢問是否想要一些「${foodCh}」。` },
+                { text: "?", type: "token-punctuation", expl: "問號。" },
+                { text: "→", type: "token-punctuation", expl: "答覆：" },
+                { text: reply, type: replyColorClass, expl: replyExpl }
+              ];
+              chinese = `問：你想吃一些${foodCh}嗎？ \n 答覆：${replyCh}`;
+            }
+
+            return { tokens, chinese };
+          }
+        },
+        quizzes: [
+          {
+            type: "choice",
+            question: "文法填充：What would she like ______ dinner?",
+            options: ["for", "at", "in", "to"],
+            answer: 0
+          },
+          {
+            type: "choice",
+            question: "客氣對話：Would you like some rice for lunch?\n→ ______, please. I'm very hungry.",
+            options: ["Yes", "No", "Not", "Okay"],
+            answer: 0
+          },
+          {
+            type: "choice",
+            question: "禮貌對話：Would she like some bread?\n→ No, thank ______.",
+            options: ["you", "her", "him", "me"],
+            answer: 0
+          },
+          {
+            type: "rebuild",
+            question: "重組句子：I would like some noodles. (我想吃一些麵條。)",
+            words: ["I", "would", "like", "some", "noodles", "."],
+            answer: ["I", "would", "like", "some", "noodles", "."]
+          },
+          {
+            type: "listening",
+            question: "句子聽力理解：點選喇叭聆聽句子發音，選出正確的中文意思。",
+            audioText: "What would you like for breakfast?",
+            options: ["你早餐想吃什麼？", "你午餐想吃飯嗎？", "我想吃一些麵包。", "你想吃一些雞肉嗎？"],
+            answer: 0
+          }
+        ]
+      }
+    };
+
+    // ==========================================
+    // 2. 全域狀態管理 (State)
+    // ==========================================
+    let currentLessonKey = "lesson1";
+    let currentSlideIndex = 1; 
+    let currentWordIndex = 0; 
+    let currentQuizIndex = 0; 
+    let quizScore = 0;
+    let quizAnswersState = []; 
+    
+    // 句型代換暫存狀態
+    let activeGrammarMode = "mode_q"; 
+    let activeSubstitutionState = {}; 
+
+    // 拼句題的暫存狀態
+    let rebuildUserWords = []; 
+
+    // ==========================================
+    // 3. 畫面切換與控制
+    // ==========================================
+    function goHome() {
+      document.getElementById("home-screen").style.display = "block";
+      document.getElementById("presentation-screen").style.display = "none";
+      stopTTS();
+    }
+
+    function startLesson(lessonKey) {
+      currentLessonKey = lessonKey;
+      currentSlideIndex = 1;
+      currentWordIndex = 0;
+      currentQuizIndex = 0;
+      quizScore = 0;
+      quizAnswersState = new Array(courseData[lessonKey].quizzes.length).fill(null);
+      
+      const lesson = courseData[lessonKey];
+      document.getElementById("current-lesson-header-title").innerText = lesson.title;
+      
+      document.getElementById("slide1-title").innerText = lesson.title;
+      document.getElementById("slide1-subtitle").innerText = "Topic: " + lesson.theme;
+      document.getElementById("slide1-illust").innerText = lesson.icon;
+
+      document.getElementById("home-screen").style.display = "none";
+      document.getElementById("presentation-screen").style.display = "block";
+
+      // 載入與重置投影片元件
+      loadWordCard();
+      
+      // 設置文法互動預設狀態
+      activeGrammarMode = lesson.grammar.modes[0].id;
+      activeSubstitutionState = {};
+      initGrammarSandbox();
+      
+      initDrillList();
+      initQuizPanel();
+      
+      showSlide(1);
+    }
+
+    function showSlide(index) {
+      currentSlideIndex = index;
+      
+      for (let i = 1; i <= 5; i++) {
+        document.getElementById(`slide-${i}`).classList.remove("active");
+      }
+      
+      document.getElementById(`slide-${index}`).classList.add("active");
+      document.getElementById("slide-index-indicator").innerText = `頁面 ${index} / 5`;
+      document.getElementById("slide-progress-bar").style.width = `${((index - 1) / 4) * 100}%`;
+
+      if (index === 1) {
+        document.getElementById("prev-slide-btn").style.visibility = "hidden";
+      } else {
+        document.getElementById("prev-slide-btn").style.visibility = "visible";
+      }
+
+      const nextBtn = document.getElementById("next-slide-btn");
+      if (index === 5) {
+        nextBtn.style.visibility = "hidden"; 
+      } else {
+        nextBtn.style.visibility = "visible";
+      }
+
+      if (index === 2) {
+        document.getElementById("flashcard-obj").classList.remove("flipped");
+      }
+      
+      stopTTS();
+    }
+
+    function nextSlide() {
+      if (currentSlideIndex < 5) {
+        showSlide(currentSlideIndex + 1);
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlideIndex > 1) {
+        showSlide(currentSlideIndex - 1);
+      }
+    }
+
+    // 鍵盤切換投影片
+    window.addEventListener("keydown", (e) => {
+      if (document.getElementById("presentation-screen").style.display === "block") {
+        if (e.key === "ArrowRight") {
+          nextSlide();
+        } else if (e.key === "ArrowLeft") {
+          prevSlide();
+        }
+      }
+    });
+
+    // ==========================================
+    // 4. Slide 2: 單字參考庫
+    // ==========================================
+    function loadWordCard() {
+      const lesson = courseData[currentLessonKey];
+      const word = lesson.words[currentWordIndex];
+      
+      const emojiEl = document.getElementById("word-emoji");
+      if (word.emoji.startsWith("<svg")) {
+        emojiEl.innerHTML = word.emoji;
+      } else {
+        emojiEl.innerHTML = "";
+        emojiEl.innerText = word.emoji;
+      }
+      
+      document.getElementById("word-eng").innerText = word.english;
+      document.getElementById("word-ipa").innerText = word.ipa;
+      document.getElementById("word-chi").innerText = word.chinese;
+      document.getElementById("word-example").innerText = `代換例句：${word.example}`;
+      
+      document.getElementById("word-index-text").innerText = `${currentWordIndex + 1} / ${lesson.words.length}`;
+      document.getElementById("flashcard-obj").classList.remove("flipped");
+    }
+
+    function toggleFlashcard() {
+      document.getElementById("flashcard-obj").classList.toggle("flipped");
+    }
+
+    function nextWord() {
+      const lesson = courseData[currentLessonKey];
+      currentWordIndex = (currentWordIndex + 1) % lesson.words.length;
+      loadWordCard();
+    }
+
+    function prevWord() {
+      const lesson = courseData[currentLessonKey];
+      currentWordIndex = (currentWordIndex - 1 + lesson.words.length) % lesson.words.length;
+      loadWordCard();
+    }
+
+    // ==========================================
+    // 5. Slide 3: 互動句子代換與文法結構大拆解 (重構核心)
+    // ==========================================
+    function initGrammarSandbox() {
+      const grammar = courseData[currentLessonKey].grammar;
+      const controlPanel = document.getElementById("sub-row-container");
+      controlPanel.innerHTML = "";
+
+      // 1. 建立模式選擇行 (切換句型)
+      const modeSelectRow = document.createElement("div");
+      modeSelectRow.className = "substitution-row";
+      modeSelectRow.innerHTML = `<span class="sub-label">🔄 選擇探險句型：</span>`;
+      
+      const modeBtnContainer = document.createElement("div");
+      modeBtnContainer.className = "sub-options-container";
+
+      grammar.modes.forEach(mode => {
+        const btn = document.createElement("button");
+        btn.className = "sub-option-btn" + (mode.id === activeGrammarMode ? " selected" : "");
+        btn.innerText = mode.label;
+        btn.onclick = () => {
+          activeGrammarMode = mode.id;
+          // 重置代換狀態
+          activeSubstitutionState = {};
+          initGrammarSandbox();
+        };
+        modeBtnContainer.appendChild(btn);
+      });
+      modeSelectRow.appendChild(modeBtnContainer);
+      controlPanel.appendChild(modeSelectRow);
+
+      // 2. 建立此模式的代換按鈕 (Tracks)
+      const tracks = grammar.tracks[activeGrammarMode];
+      tracks.forEach(track => {
+        const trackRow = document.createElement("div");
+        trackRow.className = "substitution-row";
+        trackRow.style.marginTop = "10px";
+        trackRow.innerHTML = `<span class="sub-label">✏️ ${track.label}：</span>`;
+
+        const optContainer = document.createElement("div");
+        optContainer.className = "sub-options-container";
+
+        // 設定預設選中的選項
+        if (!activeSubstitutionState[track.key]) {
+          activeSubstitutionState[track.key] = track.options[0];
+        }
+
+        track.options.forEach(opt => {
+          const btn = document.createElement("button");
+          btn.className = "sub-option-btn" + (opt === activeSubstitutionState[track.key] ? " selected" : "");
+          btn.innerText = opt;
+          btn.onclick = () => {
+            activeSubstitutionState[track.key] = opt;
+            // 重新渲染該排按鈕的高亮
+            Array.from(optContainer.children).forEach(b => b.classList.remove("selected"));
+            btn.classList.add("selected");
+            // 更新句子展示
+            updateGrammarSentenceDisplay();
+          };
+          optContainer.appendChild(btn);
+        });
+
+        trackRow.appendChild(optContainer);
+        controlPanel.appendChild(trackRow);
+      });
+
+      // 初始化句子展示
+      updateGrammarSentenceDisplay();
+    }
+
+    // 更新句子視覺化卡片
+    function updateGrammarSentenceDisplay() {
+      const grammar = courseData[currentLessonKey].grammar;
+      const data = grammar.buildSentence(activeGrammarMode, activeSubstitutionState);
+      
+      const sentenceRow = document.getElementById("grammar-visual-sentence-row");
+      sentenceRow.innerHTML = "";
+
+      const chineseRow = document.getElementById("grammar-visual-sentence-chinese");
+      chineseRow.innerText = data.chinese;
+
+      // 重設氣泡框說明
+      document.getElementById("explainer-bubble-title").innerText = "🔍 結構大拆解";
+      document.getElementById("explainer-bubble-text").innerText = "點擊上方句子的任何一個單字，就會在這裡顯示它在文法中的角色與規則喔！";
+
+      // 動態渲染每個單字卡片
+      data.tokens.forEach((tok, idx) => {
+        const brick = document.createElement("span");
+        brick.className = `grammar-token-brick ${tok.type}`;
+        brick.innerText = tok.text;
+        
+        // 點擊事件：高亮此卡片並顯示文法解說
+        brick.onclick = () => {
+          // 移除其它高亮
+          const allBricks = sentenceRow.querySelectorAll(".grammar-token-brick");
+          allBricks.forEach(b => b.classList.remove("active"));
+          brick.classList.add("active");
+
+          // 播放該字發音
+          if (tok.text !== "." && tok.text !== "?" && tok.text !== "→") {
+            speak(tok.text);
+          }
+
+          // 更新解說內容
+          document.getElementById("explainer-bubble-title").innerText = `💡 詞性與結構解析：`;
+          document.getElementById("explainer-bubble-text").innerText = tok.expl;
+        };
+
+        sentenceRow.appendChild(brick);
+      });
+    }
+
+    function speakCurrentGrammarSentence() {
+      const sentenceRow = document.getElementById("grammar-visual-sentence-row");
+      // 讀取除了符號外的所有字
+      let wordsToSpeak = Array.from(sentenceRow.children)
+        .map(b => b.innerText)
+        .filter(w => w !== "." && w !== "?" && w !== "→")
+        .join(" ");
+      speak(wordsToSpeak);
+    }
+
+    // ==========================================
+    // 6. Slide 4: 句型練習
+    // ==========================================
+    function initDrillList() {
+      const lesson = courseData[currentLessonKey];
+      const drillBox = document.getElementById("drill-list");
+      drillBox.innerHTML = "";
+
+      lesson.sentences.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "drill-card";
+        
+        const qRow = document.createElement("div");
+        qRow.className = "drill-q";
+        qRow.innerHTML = `<span>❓ ${item.q}</span>`;
+        
+        const qAudio = document.createElement("button");
+        qAudio.className = "audio-btn";
+        qAudio.style.width = "30px";
+        qAudio.style.height = "30px";
+        qAudio.style.fontSize = "12px";
+        qAudio.innerText = "🔊";
+        qAudio.onclick = (e) => { e.stopPropagation(); speak(item.q); };
+        qRow.appendChild(qAudio);
+
+        const qCh = document.createElement("div");
+        qCh.className = "chinese-translation";
+        qCh.innerText = item.qCh;
+        qRow.appendChild(qCh);
+
+        const aRow = document.createElement("div");
+        aRow.className = "drill-a";
+        aRow.innerHTML = `<span>💬 ${item.a}</span>`;
+
+        const aAudio = document.createElement("button");
+        aAudio.className = "audio-btn";
+        aAudio.style.width = "30px";
+        aAudio.style.height = "30px";
+        aAudio.style.fontSize = "12px";
+        aAudio.innerText = "🔊";
+        aAudio.onclick = (e) => { e.stopPropagation(); speak(item.a); };
+        aRow.appendChild(aAudio);
+
+        const aCh = document.createElement("div");
+        aCh.className = "chinese-translation";
+        aCh.innerText = item.aCh;
+        aRow.appendChild(aCh);
+
+        card.appendChild(qRow);
+        card.appendChild(aRow);
+        drillBox.appendChild(card);
+      });
+    }
+
+    // ==========================================
+    // 7. Slide 5: 句子文法練習題模組 (Quiz)
+    // ==========================================
+    function initQuizPanel() {
+      document.getElementById("quiz-playing-panel").style.display = "flex";
+      document.getElementById("quiz-result-panel").style.display = "none";
+      currentQuizIndex = 0;
+      quizScore = 0;
+      loadQuizQuestion();
+    }
+
+    function loadQuizQuestion() {
+      const quizzes = courseData[currentLessonKey].quizzes;
+      const quiz = quizzes[currentQuizIndex];
+      
+      document.getElementById("quiz-question-number").innerText = `第 ${currentQuizIndex + 1} / ${quizzes.length} 題`;
+      
+      document.getElementById("quiz-audio-row").style.display = "none";
+      document.getElementById("quiz-rebuild-container").style.display = "none";
+      document.getElementById("quiz-submit-rebuild-btn").style.display = "none";
+      
+      const optionsContainer = document.getElementById("quiz-options-container");
+      optionsContainer.innerHTML = "";
+      optionsContainer.style.display = "flex";
+
+      const quizCard = document.getElementById("quiz-card-obj");
+      quizCard.classList.remove("shake");
+
+      document.getElementById("quiz-question-text").innerText = quiz.question;
+
+      if (quiz.type === "listening") {
+        document.getElementById("quiz-audio-row").style.display = "flex";
+        renderChoiceOptions(quiz);
+      } else if (quiz.type === "choice") {
+        renderChoiceOptions(quiz);
+      } else if (quiz.type === "rebuild") {
+        document.getElementById("quiz-rebuild-container").style.display = "flex";
+        document.getElementById("quiz-submit-rebuild-btn").style.display = "block";
+        optionsContainer.style.display = "none";
+        initSentenceRebuild(quiz);
+      }
+
+      document.getElementById("quiz-prev-btn").style.visibility = (currentQuizIndex === 0) ? "hidden" : "visible";
+      
+      if (quizAnswersState[currentQuizIndex] !== null) {
+        document.getElementById("quiz-next-btn").style.visibility = "visible";
+        revealQuizAnswer(quiz);
+      } else {
+        document.getElementById("quiz-next-btn").style.visibility = "hidden";
+      }
+    }
+
+    function renderChoiceOptions(quiz) {
+      const container = document.getElementById("quiz-options-container");
+      container.innerHTML = "";
+
+      quiz.options.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.innerHTML = `<span>${String.fromCharCode(65 + idx)}. ${opt}</span>`;
+        btn.onclick = () => selectChoiceOption(idx, btn);
+        container.appendChild(btn);
+      });
+    }
+
+    function selectChoiceOption(selectedIndex, buttonElement) {
+      const quiz = courseData[currentLessonKey].quizzes[currentQuizIndex];
+      
+      if (quizAnswersState[currentQuizIndex] !== null) return;
+
+      const isCorrect = (selectedIndex === quiz.answer);
+      quizAnswersState[currentQuizIndex] = isCorrect;
+
+      if (isCorrect) {
+        buttonElement.classList.add("correct");
+        buttonElement.innerHTML += `<span class="feedback-icon">✅ 正確！</span>`;
+        playUIAudio("success");
+        triggerConfetti();
+      } else {
+        buttonElement.classList.add("wrong");
+        buttonElement.innerHTML += `<span class="feedback-icon">❌ 再試試</span>`;
+        
+        const options = document.getElementById("quiz-options-container").children;
+        options[quiz.answer].classList.add("correct");
+        options[quiz.answer].innerHTML += `<span class="feedback-icon">💡 答案在此</span>`;
+        document.getElementById("quiz-card-obj").classList.add("shake");
+        playUIAudio("wrong");
+      }
+
+      document.getElementById("quiz-next-btn").style.visibility = "visible";
+    }
+
+    function revealQuizAnswer(quiz) {
+      if (quiz.type === "rebuild") {
+        const buildBox = document.getElementById("sentence-build-box");
+        buildBox.innerHTML = "";
+        quiz.answer.forEach(w => {
+          const card = document.createElement("span");
+          card.className = "drag-word-card";
+          card.innerText = w;
+          buildBox.appendChild(card);
+        });
+        document.getElementById("sentence-words-pool").style.display = "none";
+        document.getElementById("quiz-submit-rebuild-btn").style.display = "none";
+      } else {
+        const options = document.getElementById("quiz-options-container").children;
+        for (let i = 0; i < options.length; i++) {
+          if (i === quiz.answer) {
+            options[i].classList.add("correct");
+            options[i].innerHTML = `<span>${String.fromCharCode(65 + i)}. ${quiz.options[i]}</span> <span class="feedback-icon">✅ 正確答案</span>`;
+          }
+        }
+      }
+    }
+
+    // ==========================================
+    // 8. 句子重組
+    // ==========================================
+    function initSentenceRebuild(quiz) {
+      rebuildUserWords = [];
+      const buildBox = document.getElementById("sentence-build-box");
+      buildBox.innerHTML = `<span style="color:#aaa; font-size:14px; font-weight:700;">點擊下方單字卡，重組出正確的文法句子：</span>`;
+      
+      const poolBox = document.getElementById("sentence-words-pool");
+      poolBox.style.display = "flex";
+      poolBox.innerHTML = "";
+
+      let shuffled = [...quiz.words].sort(() => Math.random() - 0.5);
+      if (shuffled.join(" ") === quiz.answer.join(" ")) {
+        shuffled = [...quiz.words].sort(() => Math.random() - 0.5);
+      }
+
+      shuffled.forEach((word, index) => {
+        const card = document.createElement("span");
+        card.className = "drag-word-card";
+        card.innerText = word;
+        card.dataset.index = index;
+        card.onclick = () => addWordToSentence(word, card);
+        poolBox.appendChild(card);
+      });
+    }
+
+    function addWordToSentence(word, cardElement) {
+      if (quizAnswersState[currentQuizIndex] !== null) return;
+      if (cardElement.classList.contains("used")) return;
+
+      cardElement.classList.add("used");
+      rebuildUserWords.push({ word: word, cardRef: cardElement });
+      renderUserBuildSentence();
+    }
+
+    function renderUserBuildSentence() {
+      const buildBox = document.getElementById("sentence-build-box");
+      buildBox.innerHTML = "";
+
+      if (rebuildUserWords.length === 0) {
+        buildBox.innerHTML = `<span style="color:#aaa; font-size:14px; font-weight:700;">點擊下方單字卡，重組出正確的文法句子：</span>`;
+        return;
+      }
+
+      rebuildUserWords.forEach((item, idx) => {
+        const brick = document.createElement("span");
+        brick.className = "drag-word-card";
+        brick.innerText = item.word;
+        brick.onclick = () => removeWordFromSentence(idx);
+        buildBox.appendChild(brick);
+      });
+    }
+
+    function removeWordFromSentence(index) {
+      if (quizAnswersState[currentQuizIndex] !== null) return;
+
+      const removed = rebuildUserWords.splice(index, 1)[0];
+      removed.cardRef.classList.remove("used");
+      renderUserBuildSentence();
+    }
+
+    function checkRebuildAnswer() {
+      const quiz = courseData[currentLessonKey].quizzes[currentQuizIndex];
+      if (quizAnswersState[currentQuizIndex] !== null) return;
+
+      const userSentence = rebuildUserWords.map(item => item.word).join(" ");
+      const correctSentence = quiz.answer.join(" ");
+
+      const isCorrect = (userSentence === correctSentence);
+      quizAnswersState[currentQuizIndex] = isCorrect;
+
+      const buildBox = document.getElementById("sentence-build-box");
+
+      if (isCorrect) {
+        buildBox.style.backgroundColor = "var(--color-success)";
+        buildBox.style.borderColor = "var(--border-color)";
+        playUIAudio("success");
+        triggerConfetti();
+      } else {
+        buildBox.style.backgroundColor = "var(--color-primary)";
+        document.getElementById("quiz-card-obj").classList.add("shake");
+        
+        const hint = document.createElement("div");
+        hint.style.width = "100%";
+        hint.style.fontSize = "14px";
+        hint.style.color = "red";
+        hint.style.fontWeight = "bold";
+        hint.style.marginTop = "10px";
+        hint.innerText = `💡 正確句子是：${correctSentence}`;
+        buildBox.appendChild(hint);
+        playUIAudio("wrong");
+      }
+
+      document.getElementById("quiz-submit-rebuild-btn").style.display = "none";
+      document.getElementById("sentence-words-pool").style.display = "none";
+      document.getElementById("quiz-next-btn").style.visibility = "visible";
+    }
+
+    function playQuizAudio() {
+      const quiz = courseData[currentLessonKey].quizzes[currentQuizIndex];
+      speak(quiz.audioText);
+    }
+
+    function nextQuiz() {
+      const quizzes = courseData[currentLessonKey].quizzes;
+      if (currentQuizIndex < quizzes.length - 1) {
+        currentQuizIndex++;
+        loadQuizQuestion();
+      } else {
+        showQuizResults();
+      }
+    }
+
+    function prevQuiz() {
+      if (currentQuizIndex > 0) {
+        currentQuizIndex--;
+        loadQuizQuestion();
+      }
+    }
+
+    function showQuizResults() {
+      document.getElementById("quiz-playing-panel").style.display = "none";
+      document.getElementById("quiz-result-panel").style.display = "flex";
+
+      const correctCount = quizAnswersState.filter(a => a === true).length;
+      const finalScore = correctCount * 20;
+      
+      document.getElementById("final-score").innerText = finalScore;
+      
+      let desc = "加油！再多練習幾次，你一定能掌握的！💪";
+      let badge = "🍎";
+      if (finalScore === 100) {
+        desc = "太厲害了！全對滿分！你是英文小達人！🌟🏆";
+        badge = "🏆";
+        triggerConfetti();
+        playUIAudio("success");
+      } else if (finalScore >= 80) {
+        desc = "做得非常好！大部分都答對了喔！✨⭐";
+        badge = "⭐";
+      } else if (finalScore >= 60) {
+        desc = "及格了！繼續努力，有不熟的地方可以再看單字卡！👍";
+        badge = "✏️";
+      }
+      
+      document.getElementById("final-desc").innerText = desc;
+      document.querySelector(".result-badge").innerText = badge;
+    }
+
+    function restartLessonQuiz() {
+      quizAnswersState = new Array(courseData[currentLessonKey].quizzes.length).fill(null);
+      initQuizPanel();
+    }
+
+    // ==========================================
+    // 9. 語音功能 (TTS) 與音效
+    // ==========================================
+    let ttsUtterance = null;
+
+    function speak(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        
+        ttsUtterance = new SpeechSynthesisUtterance(text);
+        ttsUtterance.lang = 'en-US';
+        ttsUtterance.rate = 0.85; 
+        
+        const voices = window.speechSynthesis.getVoices();
+        const enVoice = voices.find(v => v.lang.includes('en-US') || v.lang.includes('en'));
+        if (enVoice) ttsUtterance.voice = enVoice;
+        
+        window.speechSynthesis.speak(ttsUtterance);
+      } else {
+        alert("很抱歉，您的瀏覽器不支援發音功能！");
+      }
+    }
+
+    function stopTTS() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    }
+
+    function playWordAudio(event) {
+      event.stopPropagation(); 
+      const word = courseData[currentLessonKey].words[currentWordIndex];
+      speak(word.english);
+    }
+
+    function playUIAudio(type) {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (type === "success") {
+          const osc1 = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          
+          osc1.type = 'sine';
+          osc1.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
+          osc1.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); 
+          osc1.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); 
+          
+          gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+          
+          osc1.connect(gain);
+          gain.connect(audioCtx.destination);
+          
+          osc1.start();
+          osc1.stop(audioCtx.currentTime + 0.4);
+        } else if (type === "wrong") {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+          osc.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+          
+          gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+          
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.35);
+        }
+      } catch (e) {
+        console.log("AudioContext blocked.");
+      }
+    }
+
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.getVoices();
+    }
+
+    // ==========================================
+    // 10. 答對灑花效果 (Canvas Confetti)
+    // ==========================================
+    const canvas = document.getElementById("confetti-canvas");
+    const ctx = canvas.getContext("2d");
+    let confettiActive = false;
+    let confettiArray = [];
+    const colors = ["#FFB5B5", "#A8E6CF", "#FFD3B6", "#BDE0FE", "#C7CEEA", "#FDFFB6"];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class ConfettiPiece {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * -canvas.height - 20;
+        this.size = Math.random() * 8 + 6;
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+        this.speedY = Math.random() * 5 + 4;
+        this.speedX = Math.random() * 4 - 2;
+        this.rotation = Math.random() * 360;
+        this.rotationSpeed = Math.random() * 4 - 2;
+      }
+      update() {
+        this.y += this.speedY;
+        this.x += this.speedX;
+        this.rotation += this.rotationSpeed;
+      }
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate((this.rotation * Math.PI) / 180);
+        ctx.fillStyle = this.color;
+        ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
+        ctx.restore();
+      }
+    }
+
+    function triggerConfetti() {
+      confettiArray = [];
+      for (let i = 0; i < 70; i++) {
+        confettiArray.push(new ConfettiPiece());
+      }
+      if (!confettiActive) {
+        confettiActive = true;
+        animateConfetti();
+      }
+    }
+
+    function animateConfetti() {
+      if (!confettiActive) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      let allOut = true;
+      confettiArray.forEach(p => {
+        p.update();
+        p.draw();
+        if (p.y < canvas.height) {
+          allOut = false;
+        }
+      });
+
+      if (allOut) {
+        confettiActive = false;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      } else {
+        requestAnimationFrame(animateConfetti);
+      }
+    }
+
+  </script>
+</body>
+</html>
